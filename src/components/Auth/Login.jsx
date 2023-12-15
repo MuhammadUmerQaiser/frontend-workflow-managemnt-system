@@ -1,11 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/auth/login.css";
 import { loginAnimation } from "../../styles/auth/animation";
-
+import { useAppDispatch } from "../../store";
+import { setUser } from "../../store/auth";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
   useEffect(() => {
     loginAnimation();
   }, []);
+  const dispatch = useAppDispatch();
+  const [sampleState, setSampleState] = useState();
+  const navigate = useNavigate()
+  const sampleClick = () => {
+    dispatch(setUser(sampleState));
+    navigate("/")
+  };
   return (
     <div className="page">
       <div className="container">
@@ -34,10 +43,18 @@ const Login = () => {
           </svg>
           <div className="form">
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" />
+            <input
+              type="email"
+              id="email"
+              onChange={(e) => {
+                setSampleState(e.target.value);
+                console.log(e.target.value)
+              }}
+            />
             <label htmlFor="password">Password</label>
             <input type="password" id="password" />
             <input type="submit" id="submit" value="Submit" />
+            <button onClick={sampleClick}>Sample Click for redux</button>
           </div>
         </div>
       </div>

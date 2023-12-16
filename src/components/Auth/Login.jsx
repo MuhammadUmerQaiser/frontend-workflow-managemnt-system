@@ -1,20 +1,47 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useMemo } from "react";
 import "../../styles/auth/login.css";
 import { loginAnimation } from "../../styles/auth/animation";
 import { useAppDispatch } from "../../store";
 import { setUser } from "../../store/auth";
 import { useNavigate } from "react-router-dom";
+// import {AuthService} from "../../services/Auth/index.service"
+// import { useSnackbar } from 'notistack';
 const Login = () => {
   useEffect(() => {
     loginAnimation();
   }, []);
   const dispatch = useAppDispatch();
+  // const snackbar = useSnackbar();
+
   const [sampleState, setSampleState] = useState();
   const navigate = useNavigate()
   const sampleClick = () => {
     dispatch(setUser(sampleState));
     navigate("/")
   };
+  // const authService = useMemo(() => new AuthService(), []);
+  // const handleLogin = async() =>{
+  // try{
+  // const response = await authService.login("provide the data here as login expects a paramter")
+  //       if (response.is_success) {
+  //       localStorage.setItem('token', response.data.token);
+  // dispatch(setUser(response mai user ka data aaiga na woh isma redux mai phaink do))
+  //       router.push('/');
+  //       snackbar.enqueueSnackbar('successfully logged in', {
+  //         variant: 'success',
+  //         autoHideDuration: 2000,
+  //       });
+  //       return response;
+  //     }
+  //     snackbar.enqueueSnackbar(response.message, {
+  //       variant: 'error',
+  //       autoHideDuration: 2000,
+  //     });
+  // }
+  // catch (err) {
+  //     console.log('error', err);
+  //   } 
+  // }
   return (
     <div className="page">
       <div className="container">

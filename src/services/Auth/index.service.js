@@ -7,8 +7,19 @@ export class AuthService {
   async login(data) {
     try {
       const response = await axios.post(
-        "define url here like localhost:8000/api" + "/login",
-        data
+        "http://localhost:5000/auth/login",
+        data,
+      );
+      return response;
+    } catch (err) {
+      return err;
+    }
+  }
+  async signup(data) {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/auth/register",
+        data,
       );
       return response;
     } catch (err) {

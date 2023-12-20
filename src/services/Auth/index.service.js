@@ -8,7 +8,7 @@ export class AuthService {
     try {
       const response = await axios.post(
         "http://localhost:5000/auth/login",
-        data,
+        data
       );
       return response;
     } catch (err) {
@@ -19,9 +19,20 @@ export class AuthService {
     try {
       const response = await axios.post(
         "http://localhost:5000/auth/register",
-        data,
+        data
       );
       return response;
+    } catch (err) {
+      return err;
+    }
+  }
+  async verifyAccount(otp, id) {
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/auth/verify-otp/${id}`,
+        otp
+      );
+      return response
     } catch (err) {
       return err;
     }

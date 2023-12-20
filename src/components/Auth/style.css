@@ -6,7 +6,7 @@
     justify-content: center;
   }
   .inputFields {
-    height: 40px;
+    height: 30px;
     border-radius: 15px;
     background: var(--grayscale-input-background, #eff0f6);
     border: none;
@@ -40,16 +40,6 @@
     margin-top: 20px;
   }
   
-  .signUpBtn {
-    border-radius: 20px;
-    background: linear-gradient(104deg, #2a7e8d 4.68%, #140c56 92.19%);
-    width: -webkit-fill-available;
-    color: white;
-    font-size: 14.85px;
-    height: 55px;
-    border: none;
-  }
-  
   .formBox {
     width: 60%;
     display: flex;
@@ -67,11 +57,15 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     width: 500px;
     height: 100vh;
     margin: auto;
     gap: 10px;
+  }
+  .forgotPasswordTypo{
+    text-align: end;
+    color: #287287;
   }
   
   @media screen and (max-width: 860px) {

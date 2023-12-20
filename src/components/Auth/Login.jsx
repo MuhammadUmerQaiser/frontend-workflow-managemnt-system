@@ -104,14 +104,15 @@ const Login = () => {
               id="password"
               placeholder="Password"
             />
-            <p
+            <Link
+              className="forgotPasswordTypo"
+              to="/forgot-password"
               style={{
-                textAlign: "end",
-                color: "#287287",
+                textDecoration:"none"
               }}
             >
               Forgot password
-            </p>
+            </Link>
             <AuthButton
               label="Login"
               loading={loading}

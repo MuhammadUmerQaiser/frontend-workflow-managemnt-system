@@ -5,7 +5,8 @@ import "./style.css";
 import { useSnackbar } from "notistack";
 import { AuthService } from "../../services/Auth/index.service";
 import AuthButton from "../common/Button/AuthButton";
-
+import { useAppDispatch } from "../../store/"
+import {  setUser } from "../../store/auth/"
 const Signup = () => {
   const [credentials, setCredentials] = useState({
     name: "",
@@ -18,6 +19,7 @@ const Signup = () => {
   let navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useAppDispatch()
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -37,11 +39,11 @@ const Signup = () => {
       setLoading(true);
       const response = await authService.signup(credentials);
 
-      console.log("res:", response);
 
       if (response.data.proceed === "ok") {
         const token = response.data.token;
         localStorage.setItem("token", token);
+        dispatch(setUser(response?.data))
         navigate("/verify-account");
 
         enqueueSnackbar("User logged in successfully", {
@@ -115,7 +117,7 @@ const Signup = () => {
               placeholder="Password"
             />
             <input
-              type="password"
+              // type="password"
               className="form-control inputFields"
               value={credentials.role}
               onChange={onChange}

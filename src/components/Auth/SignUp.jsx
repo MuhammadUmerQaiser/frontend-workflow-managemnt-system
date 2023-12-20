@@ -7,6 +7,8 @@ import { AuthService } from "../../services/Auth/index.service";
 import AuthButton from "../common/Button/AuthButton";
 import { useAppDispatch } from "../../store/"
 import {  setUser } from "../../store/auth/"
+import srb from "../../assets/srb.png"
+
 const Signup = () => {
   const [credentials, setCredentials] = useState({
     name: "",
@@ -83,7 +85,7 @@ const Signup = () => {
           >
             {/* idher srb ka logo waghaira laga do acha sa  */}
 
-            {/* <img src={Logo} alt="owl" /> */}
+            <img src={srb} alt="srb" />
           </div>
 
           <form onSubmit={handleSubmit} className="formBox">
@@ -116,15 +118,22 @@ const Signup = () => {
               id="password"
               placeholder="Password"
             />
-            <input
-              // type="password"
-              className="form-control inputFields"
-              value={credentials.role}
-              onChange={onChange}
-              name="role"
-              id="role"
-              placeholder="role"
-            />
+         <div className="selectWrapper">
+  <select
+    className="form-control inputFields customSelect" // Add customSelect class
+    value={credentials.role}
+    onChange={onChange}
+    name="role"
+    id="role"
+    style={{ height: '40px' }} // Adjust the height as needed
+  >
+    <option value="">Select a role</option>
+    <option value="admin">Admin</option>
+    <option value="user">User</option>
+    {/* Add other roles as needed */}
+  </select>
+</div>
+
             <AuthButton
               label="Signup"
               loading={loading}
@@ -132,7 +141,11 @@ const Signup = () => {
             />
 
             <div className="noAccBox">
+              <p className="alreadyAccountTextStyle">
               Already have an account?
+                
+              </p>
+
               <span>
                 <Link
                   to="/login"

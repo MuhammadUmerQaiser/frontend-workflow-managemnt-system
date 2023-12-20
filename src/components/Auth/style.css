@@ -4,13 +4,15 @@
     height: 100vh;
     align-items: center;
     justify-content: center;
+    background-size: cover;
   }
-  .inputFields {
+  .inputFields, select {
     height: 30px;
     border-radius: 15px;
     background: var(--grayscale-input-background, #eff0f6);
     border: none;
     padding: 10px;
+    
   }
   .signupHeading {
     color: var(--grayscale-title-active, #14142b);
@@ -24,7 +26,18 @@
     margin-top: 0;
     margin-bottom: 0;
   }
-  
+  .forgotPasswordText{
+    color: var(--grayscale-title-active, #14142b);
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: Abel;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 50px;
+    letter-spacing: 1px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
   .logoBox {
     display: flex;
     align-items: center;
@@ -52,6 +65,7 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    flex-direction: row;
   }
   .verifyWrap {
     display: flex;
@@ -67,7 +81,27 @@
     text-align: end;
     color: #287287;
   }
-  
+  /* CSS */
+.selectWrapper {
+  position: relative;
+  display: inline-block; /* Ensure it only takes up necessary space */
+}
+
+.customSelect {
+  width: 100%; /* Ensure the select fills the container */
+  height: 100%;
+  padding-right: 30px; /* Adjust the padding value as needed */
+}
+
+/* Style the arrow icon */
+.customSelect::after {
+  content: '\u25BC'; /* Unicode for the down arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px; /* Adjust the distance of the arrow from the right */
+  transform: translateY(-50%);
+}
+
   @media screen and (max-width: 860px) {
     .signUpMain {
       flex-direction: column-reverse;

@@ -1,0 +1,9 @@
+.signUpBtn {
+    border-radius: 20px;
+    background: linear-gradient(104deg, #2a7e8d 4.68%, #140c56 92.19%);
+    width: -webkit-fill-available;
+    color: white;
+    font-size: 14.85px;
+    height: 45px;
+    border: none;
+  }

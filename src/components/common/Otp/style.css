@@ -1,0 +1,16 @@
+.otpStyle {
+    border: 1px solid rgba(119, 119, 119, 0.53);
+    min-width: 4em;
+    min-height: 4em;
+    text-align: center;
+    margin-left: 5px;
+    border-radius: 8px;
+  }
+  
+  @media (max-width: 500px) {
+    .otpStyle{
+      min-width: 2.5em;
+      min-height: 2.5em;
+    }
+  }
+  

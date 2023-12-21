@@ -5,6 +5,7 @@ import "./style.css";
 import { useSnackbar } from "notistack";
 import { AuthService } from "../../services/Auth/index.service";
 import AuthButton from "../common/Button/AuthButton";
+import srb from "../../assets/srb.png"
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -80,8 +81,8 @@ const Login = () => {
               marginBottom: "40px",
             }}
           >
-            {/* idher srb ka logo waghaira laga do acha sa  */}
-            {/* <img src={Logo} alt="owl" /> */}
+            <img src={srb} alt="srb" />
+
           </div>
 
           <form onSubmit={handleSubmit} className="formBox">

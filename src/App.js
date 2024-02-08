@@ -1,10 +1,10 @@
 import React from "react";
-import GlobalRouter from "./router/GlobalRouter";
+import Routes from "./router/Routes";
 
 function App() {
   return (
     <React.Fragment>
-      <GlobalRouter />
+      <Routes />
     </React.Fragment>
   );
 }

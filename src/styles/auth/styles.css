@@ -6,6 +6,9 @@
     justify-content: center;
     background-size: cover;
   }
+input, select{
+    outline:none;
+}
   .inputFields, select {
     height: 30px;
     border-radius: 15px;

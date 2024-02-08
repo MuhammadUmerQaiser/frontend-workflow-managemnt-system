@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
-import Otp from "../common/Otp/Otp";
-import AuthButton from "../common/Button/AuthButton";
+import Otp from "../../components/common/Otp/Otp";
+import AuthButton from "../../components/common/Button/AuthButton";
 import { AuthService } from "../../services/Auth/index.service";
 import { useAppSelector,useAppDispatch } from "../../store";
 import { Link } from "react-router-dom";
@@ -18,38 +18,38 @@ const Verification = () => {
   const dispatch = useAppDispatch()
 
   const handleVerify = async () => {
-    setLoading(true);
-    if (otp.length < 6) {
-      enqueueSnackbar("Please fill the whole Otp", {
-        variant: "error",
-      });
-      setLoading(false);
+    // setLoading(true);
+    // if (otp.length < 6) {
+    //   enqueueSnackbar("Please fill the whole Otp", {
+    //     variant: "error",
+    //   });
+    //   setLoading(false);
 
-      return;
-    }
-    try {
-      const response = await authService.verifyAccount(
-        {
-          otp: otp,
-        },
-        user?.result?._id
-      );
-      if (response?.data?.message === "OTP verified successfully") {
-        enqueueSnackbar("Account Verified Successfully", {
-          variant: "success",
-        });
-        dispatch(setUser(response?.data?.updatedUser))
-        return response;
-      } else {
-        enqueueSnackbar(response?.response?.data?.message, {
-          variant: "error",
-        });
-      }
-    } catch (err) {
-      return err;
-    } finally {
-      setLoading(false);
-    }
+    //   return;
+    // }
+    // try {
+    //   const response = await authService.verifyAccount(
+    //     {
+    //       otp: otp,
+    //     },
+    //     user?.result?._id
+    //   );
+    //   if (response?.data?.message === "OTP verified successfully") {
+    //     enqueueSnackbar("Account Verified Successfully", {
+    //       variant: "success",
+    //     });
+    //     dispatch(setUser(response?.data?.updatedUser))
+    //     return response;
+    //   } else {
+    //     enqueueSnackbar(response?.response?.data?.message, {
+    //       variant: "error",
+    //     });
+    //   }
+    // } catch (err) {
+    //   return err;
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

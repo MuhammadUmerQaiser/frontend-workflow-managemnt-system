@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useState, useMemo } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "./style.css";
+import "../../styles/auth/styles.css";
 import { useSnackbar } from "notistack";
 import { AuthService } from "../../services/Auth/index.service";
-import AuthButton from "../common/Button/AuthButton";
-import { useAppDispatch } from "../../store/"
-import {  setUser } from "../../store/auth/"
-import srb from "../../assets/srb.png"
+import AuthButton from "../../components/common/Button/AuthButton";
+import { useAppDispatch } from "../../store/";
+import { setUser } from "../../store/auth/";
+import srb from "../../assets/srb.png";
 
 const Signup = () => {
   const [credentials, setCredentials] = useState({
@@ -21,52 +21,52 @@ const Signup = () => {
   let navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e) => {
-    setLoading(true);
-    e.preventDefault();
-    const { email, password, name, role } = credentials;
+    // setLoading(true);
+    // e.preventDefault();
+    // const { email, password, name, role } = credentials;
 
-    if (!email || !password || !name || !role) {
-      enqueueSnackbar("Please fill in all the fields", {
-        variant: "error",
-      });
-      setLoading(false);
+    // if (!email || !password || !name || !role) {
+    //   enqueueSnackbar("Please fill in all the fields", {
+    //     variant: "error",
+    //   });
+    //   setLoading(false);
 
-      return;
-    }
+    //   return;
+    // }
 
-    try {
-      setLoading(true);
-      const response = await authService.signup(credentials);
+    // try {
+    // setLoading(true);
+    // const response = await authService.signup(credentials);
+    navigate("/verify-account");
 
+    // if (response.data.proceed === "ok") {
+    //   const token = response.data.token;
+    //   localStorage.setItem("token", token);
+    //   dispatch(setUser(response?.data))
+    //   navigate("/verify-account");
 
-      if (response.data.proceed === "ok") {
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-        dispatch(setUser(response?.data))
-        navigate("/verify-account");
-
-        enqueueSnackbar("User logged in successfully", {
-          variant: "success",
-          autoHideDuration: 2000,
-        });
-      } else {
-        enqueueSnackbar("Invalid credentials", {
-          variant: "error",
-          autoHideDuration: 2000,
-        });
-      }
-    } catch (error) {
-      enqueueSnackbar("An error occurred", {
-        variant: "error",
-        autoHideDuration: 2000,
-      });
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+    //   enqueueSnackbar("User logged in successfully", {
+    //     variant: "success",
+    //     autoHideDuration: 2000,
+    //   });
+    // } else {
+    //   enqueueSnackbar("Invalid credentials", {
+    //     variant: "error",
+    //     autoHideDuration: 2000,
+    //   });
+    // }
+    // } catch (error) {
+    //   enqueueSnackbar("An error occurred", {
+    //     variant: "error",
+    //     autoHideDuration: 2000,
+    //   });
+    //   console.log(error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const onChange = (e) => {
@@ -118,21 +118,21 @@ const Signup = () => {
               id="password"
               placeholder="Password"
             />
-         <div className="selectWrapper">
-  <select
-    className="form-control inputFields customSelect" // Add customSelect class
-    value={credentials.role}
-    onChange={onChange}
-    name="role"
-    id="role"
-    style={{ height: '40px' }} // Adjust the height as needed
-  >
-    <option value="">Select a role</option>
-    <option value="admin">Admin</option>
-    <option value="user">User</option>
-    {/* Add other roles as needed */}
-  </select>
-</div>
+            <div className="selectWrapper">
+              <select
+                className="form-control inputFields customSelect" // Add customSelect class
+                value={credentials.role}
+                onChange={onChange}
+                name="role"
+                id="role"
+                style={{ height: "40px" }} // Adjust the height as needed
+              >
+                <option value="">Select a role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+                {/* Add other roles as needed */}
+              </select>
+            </div>
 
             <AuthButton
               label="Signup"
@@ -142,8 +142,7 @@ const Signup = () => {
 
             <div className="noAccBox">
               <p className="alreadyAccountTextStyle">
-              Already have an account?
-                
+                Already have an account?
               </p>
 
               <span>

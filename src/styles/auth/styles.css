@@ -9,14 +9,14 @@
 input, select{
     outline:none;
 }
-  .inputFields, select {
+  /* .inputFields, select {
     height: 30px;
     border-radius: 15px;
     background: var(--grayscale-input-background, #eff0f6);
     border: none;
     padding: 10px;
     
-  }
+  } */
   .signupHeading {
     color: var(--grayscale-title-active, #14142b);
     font-feature-settings: "clig" off, "liga" off;

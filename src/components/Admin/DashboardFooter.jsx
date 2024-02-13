@@ -1,8 +1,8 @@
 const DashboardFooter = () => {
   return (
     <>
-      <footer id="footer" class="footer">
-        <div class="copyright">
+      <footer id="footer" className="footer">
+        <div className="copyright">
           &copy; Copyright{" "}
           <strong>
             <span>SRB</span>

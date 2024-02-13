@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export class AuthService {
-  constructor() {}
+  constructor() { }
 
   async login(data) {
     try {

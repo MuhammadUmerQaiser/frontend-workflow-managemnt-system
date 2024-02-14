@@ -7,19 +7,19 @@ const Employees = () => {
   return (
     <>
          <AdminLayout>
-      <main id="main" class="main">
-        <section class="section dashboard">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="tab-content">
+      <main id="main" className="main">
+        <section className="section dashboard">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="tab-content">
                 {/* Employees Tab */}
-                <div class="tab-pane fade show active" id="employees">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title">Employee Table</h5>
+                <div className="tab-pane fade show active" id="employees">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">Employee Table</h5>
                       <EmployeeTable/>
                       {/* Add New Employee Button */}
-                      <Link to="/employees/addNewEmployees" class="btn btn-primary mt-3">
+                      <Link to="/employees/addNewEmployees" className="btn btn-primary mt-3">
                         Add New Employee
                       </Link>
                     </div>

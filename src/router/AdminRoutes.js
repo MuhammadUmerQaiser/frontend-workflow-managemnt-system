@@ -9,9 +9,9 @@ function AdminRoutes() {
     <React.Fragment>
       <BrowserRouter>
         <Routes>
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="/employees" element={<Employees />} />
-          <Route path="/employees/addNewEmployees" element={<AddEmployeeForm />} />
+          <Route path="/admin" exact  element={<Dashboard />} />
+          <Route path="/employees" exact  element={<Employees />} />
+          <Route path="/employees/addNewEmployees" exact  element={<AddEmployeeForm />} />
         </Routes>
       </BrowserRouter>
     </React.Fragment>

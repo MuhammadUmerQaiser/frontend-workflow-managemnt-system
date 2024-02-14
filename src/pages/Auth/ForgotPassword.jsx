@@ -77,7 +77,7 @@ const ForgotPassword = () => {
     <>
       <div className="loginMain">
         <div className="leftContainer">
-        <img src={srb} alt="srb" />
+          <img src={srb} alt="srb" />
 
           <div
             className="logoBox"
@@ -85,7 +85,7 @@ const ForgotPassword = () => {
               marginBottom: "40px",
             }}
           >
-<p className='forgotPasswordText'>Forgot Password</p>
+            <p className='forgotPasswordText'>Forgot Password</p>
           </div>
 
           <form onSubmit={handleSubmit} className="formBox">
@@ -99,14 +99,14 @@ const ForgotPassword = () => {
               aria-describedby="emailHelp"
               placeholder="Email"
             />
-            
-            
+
+
             <AuthButton
               label="Submit"
               loading={loading}
               onClick={handleSubmit}
             />
-           
+
           </form>
         </div>
       </div>

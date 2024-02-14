@@ -16,7 +16,7 @@ const DashboardSidebar = () => {
           </li>
 
           <li className="nav-item">
-            <Link to="/employees" className="nav-link">
+            <Link to="/admin/employees" className="nav-link">
               <i className="bi bi-people"></i>
               <span>Employees</span>
             </Link>

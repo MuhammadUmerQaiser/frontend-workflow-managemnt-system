@@ -14,7 +14,6 @@ const Signup = () => {
     name: "",
     email: "",
     password: "",
-    role: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -24,49 +23,42 @@ const Signup = () => {
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (e) => {
-    // setLoading(true);
-    // e.preventDefault();
-    // const { email, password, name, role } = credentials;
+    setLoading(true);
+    e.preventDefault();
+    const { email, password, name } = credentials;
 
-    // if (!email || !password || !name || !role) {
-    //   enqueueSnackbar("Please fill in all the fields", {
-    //     variant: "error",
-    //   });
-    //   setLoading(false);
+    if (!email || !password || !name) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+      });
+      setLoading(false);
+      return;
+    }
 
-    //   return;
-    // }
+    try {
+      setLoading(true);
+      const response = await authService.signup(credentials);
+      console.log(response);
 
-    // try {
-    // setLoading(true);
-    // const response = await authService.signup(credentials);
-    navigate("/verify-account");
-
-    // if (response.data.proceed === "ok") {
-    //   const token = response.data.token;
-    //   localStorage.setItem("token", token);
-    //   dispatch(setUser(response?.data))
-    //   navigate("/verify-account");
-
-    //   enqueueSnackbar("User logged in successfully", {
-    //     variant: "success",
-    //     autoHideDuration: 2000,
-    //   });
-    // } else {
-    //   enqueueSnackbar("Invalid credentials", {
-    //     variant: "error",
-    //     autoHideDuration: 2000,
-    //   });
-    // }
-    // } catch (error) {
-    //   enqueueSnackbar("An error occurred", {
-    //     variant: "error",
-    //     autoHideDuration: 2000,
-    //   });
-    //   console.log(error);
-    // } finally {
-    //   setLoading(false);
-    // }
+      if (response.status === 200) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        dispatch(setUser(response?.data))
+        enqueueSnackbar("Account Created Successfully", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        navigate("/admin");
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onChange = (e) => {
@@ -118,21 +110,6 @@ const Signup = () => {
               id="password"
               placeholder="Password"
             />
-            <div className="selectWrapper">
-              <select
-                className="form-control inputFields customSelect" // Add customSelect class
-                value={credentials.role}
-                onChange={onChange}
-                name="role"
-                id="role"
-                style={{ height: "40px" }} // Adjust the height as needed
-              >
-                <option value="">Select a role</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-                {/* Add other roles as needed */}
-              </select>
-            </div>
 
             <AuthButton
               label="Signup"

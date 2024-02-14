@@ -18,7 +18,7 @@ export class AuthService {
   async signup(data) {
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/register",
+        "http://localhost:5000/auth/admin-register",
         data
       );
       return response;
@@ -32,7 +32,7 @@ export class AuthService {
         `http://localhost:5000/auth/verify-otp/${id}`,
         otp
       );
-      return response
+      return response;
     } catch (err) {
       return err;
     }

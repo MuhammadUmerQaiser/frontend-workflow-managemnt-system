@@ -1,7 +1,11 @@
 // AddEmployeeForm.js
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { generateRandomPassword } from "../../../helpers/helpers";
+import AuthButton from "../../common/Button/AuthButton";
+import { useSnackbar } from "notistack";
+import { useNavigate } from "react-router-dom";
+import { EmployeeService } from "../../../services/admin/employees.service";
 
 const AddEmployeeForm = () => {
   const [employeeData, setEmployeeData] = useState({
@@ -15,6 +19,10 @@ const AddEmployeeForm = () => {
     grade: "",
     tasks: [],
   });
+  const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  let navigate = useNavigate();
+  const employeeService = useMemo(() => new EmployeeService(), []);
 
   const generatePassword = () => {
     const password = generateRandomPassword();
@@ -25,16 +33,74 @@ const AddEmployeeForm = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setEmployeeData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox" && name === "tasks") {
+      setEmployeeData((prevData) => ({
+        ...prevData,
+        tasks: checked
+          ? [...prevData.tasks, value]
+          : prevData.tasks.filter((task) => task !== value),
+      }));
+    } else {
+      setEmployeeData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted data:", employeeData);
+    const {
+      name,
+      email,
+      password,
+      domain,
+      designation,
+      member,
+      team,
+      grade,
+      tasks,
+    } = employeeData;
+
+    if (
+      !email ||
+      !password ||
+      !name ||
+      !domain ||
+      !designation ||
+      !member ||
+      !grade ||
+      !tasks
+    ) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await employeeService.addEmployees(employeeData);
+      console.log(response);
+
+      if (response.status === 200) {
+        enqueueSnackbar("Employee Created Successfully", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        navigate("/admin/employees");
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
     setEmployeeData({
       name: "",
       email: "",
@@ -143,6 +209,9 @@ const AddEmployeeForm = () => {
                     className="form-check-input"
                     type="radio"
                     name="member"
+                    value="individual"
+                    onChange={handleChange}
+                    checked={employeeData.member === "individual"}
                   />
                   <label className="form-check-label">Individual</label>
                 </div>
@@ -151,26 +220,31 @@ const AddEmployeeForm = () => {
                     className="form-check-input"
                     type="radio"
                     name="member"
+                    value="group"
+                    onChange={handleChange}
+                    checked={employeeData.member === "group"}
                   />
                   <label className="form-check-label">Group</label>
                 </div>
               </div>
             </div>
-            <div className="col-6">
-              <label htmlFor="domain" className="form-label">
-                Team
-              </label>
-              <select
-                className="form-select"
-                name="team"
-                value={employeeData.team}
-                onChange={handleChange}
-              >
-                <option value="">Select Team</option>
-                <option value="team1">Team 1</option>
-                <option value="team2">Team 2</option>
-              </select>
-            </div>
+            {employeeData.member == "group" && (
+              <div className="col-6">
+                <label htmlFor="domain" className="form-label">
+                  Team
+                </label>
+                <select
+                  className="form-select"
+                  name="team"
+                  value={employeeData.team}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Team</option>
+                  <option value="team1">Team 1</option>
+                  <option value="team2">Team 2</option>
+                </select>
+              </div>
+            )}
             <div className="col-6">
               <label htmlFor="designation" className="form-label">
                 Grade
@@ -194,19 +268,32 @@ const AddEmployeeForm = () => {
                 <input
                   className="form-check-input"
                   type="checkbox"
-                  id="gridCheck"
+                  name="tasks"
+                  value="Task 1"
+                  onChange={handleChange}
+                  checked={employeeData.tasks.includes("Task 1")}
                 />
                 <label className="form-check-label">Task 1</label>
               </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="tasks"
+                  value="Task 2"
+                  onChange={handleChange}
+                  checked={employeeData.tasks.includes("Task 2")}
+                />
+                <label className="form-check-label">Task 2</label>
+              </div>
             </div>
             <div>
-              <button
-                type="submit"
+              <AuthButton
+                label={"Add Employee"}
+                onClick={handleSubmit}
+                loading={loading}
                 className="btn btn-success mt-3"
-                onClick={(e) => handleSubmit(e)}
-              >
-                Add Employee
-              </button>
+              />
             </div>
           </form>
         </div>

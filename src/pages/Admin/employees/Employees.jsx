@@ -1,9 +1,35 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import EmployeeTable from "../../../components/Admin/employees/EmployeeTable";
 import AdminLayout from "../../../components/Admin/AdminLayout";
+import Table from "../../../components/common/table/Table";
+import { EmployeeService } from "../../../services/admin/employees.service";
+import { useSnackbar } from "notistack";
 
 const Employees = () => {
+  const fields = ["Id", "Name", "Email", "Domain", "Designation", "Action"];
+  const [employees, setEmployees] = useState([]);
+  const employeeService = useMemo(() => new EmployeeService(), []);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    getListOfAllEmployees();
+  }, []);
+
+  const getListOfAllEmployees = async () => {
+    try {
+      const response = await employeeService.getAllEmployees();
+      console.log(response);
+      if (response.status === 200) {
+        setEmployees(response?.data);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } 
+  }
+  
   return (
     <>
       <AdminLayout>
@@ -30,13 +56,15 @@ const Employees = () => {
                         <div className="d-flex align-items-start justify-content-between mb-3">
                           <h5 className="card-title">Employees</h5>
                           <Link
-                            to="/employees/addNewEmployees"
+                            to="/admin/employees/create"
                             className="btn btn-primary btn-sm mt-3"
                           >
                             Add New Employee
                           </Link>
                         </div>
-                        <EmployeeTable />
+                        <div className="table-reponsive">
+                          <Table fields={fields} data={employees} />
+                        </div>
                       </div>
                     </div>
                   </div>

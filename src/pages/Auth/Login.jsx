@@ -6,6 +6,8 @@ import { useSnackbar } from "notistack";
 import { AuthService } from "../../services/Auth/index.service";
 import AuthButton from "../../components/common/Button/AuthButton";
 import srb from "../../assets/srb.png";
+import { useAppDispatch } from "../../store";
+import { setUser } from "../../store/auth/";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
@@ -17,48 +19,48 @@ const Login = () => {
   let navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e) => {
-    // setLoading(true);
-    // e.preventDefault();
-    // const { email, password } = credentials;
-    // if (!email || !password) {
-    //   enqueueSnackbar("Please fill in both email and password fields", {
-    //     variant: "error",
-    //   });
-    //   setLoading(false);
-    //   return;
-    // }
-    // try {
-    //   setLoading(true);
-    //   const response = await authService.login({
-    //     email: credentials.email,
-    //     password: credentials.password,
-    //   });
-    //   console.log("res:", response);
-    //   if (response.data.result.proceed === "ok") {
-    //     const token = response.data.token;
-    //     localStorage.setItem("token", token);
-    //     // navigate("/dashboard");
-    //     enqueueSnackbar("User logged in successfully", {
-    //       variant: "success",
-    //       autoHideDuration: 2000,
-    //     });
-    //   } else {
-    //     enqueueSnackbar("Invalid credentials", {
-    //       variant: "error",
-    //       autoHideDuration: 2000,
-    //     });
-    //   }
-    // } catch (error) {
-    //   enqueueSnackbar("An error occurred", {
-    //     variant: "error",
-    //     autoHideDuration: 2000,
-    //   });
-    //   console.log(error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    setLoading(true);
+    e.preventDefault();
+    const { email, password } = credentials;
+    if (!email || !password) {
+      enqueueSnackbar("Please fill all fields", {
+        variant: "error",
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await authService.login({
+        email: credentials.email,
+        password: credentials.password,
+      });
+      if (response.status === 200) {
+        const token = response.data.token;
+        localStorage.setItem("token", token);
+        dispatch(setUser(response?.data));
+        enqueueSnackbar("User logged in successfully", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        navigate("/admin");
+      } else {
+        enqueueSnackbar("Invalid credentials", {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onChange = (e) => {

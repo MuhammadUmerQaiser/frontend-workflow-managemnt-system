@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SignupPage from "../pages/Auth/Signup";
 import LoginPage from "../pages/Auth/Login";
-import VerificationPage from "../pages/Auth/Verification"
-import ForgotPasswordPage from "../pages/Auth/ForgotPassword"
+import VerificationPage from "../pages/Auth/Verification";
+import ForgotPasswordPage from "../pages/Auth/ForgotPassword";
 
 function GlobalRouter() {
   return (

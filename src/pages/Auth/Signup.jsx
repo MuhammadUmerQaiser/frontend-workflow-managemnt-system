@@ -38,12 +38,10 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await authService.signup(credentials);
-      console.log(response);
-
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        dispatch(setUser(response?.data))
+        dispatch(setUser(response?.data));
         enqueueSnackbar("Account Created Successfully", {
           variant: "success",
           autoHideDuration: 2000,
@@ -55,7 +53,6 @@ const Signup = () => {
         variant: "error",
         autoHideDuration: 2000,
       });
-      console.log(error);
     } finally {
       setLoading(false);
     }

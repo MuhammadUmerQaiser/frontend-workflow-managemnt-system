@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useMemo } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import "../../styles/auth/styles.css";
 import { useSnackbar } from "notistack";
 import { AuthService } from "../../services/Auth/index.service";
@@ -41,12 +41,19 @@ const Login = () => {
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        dispatch(setUser(response?.data));
+        console.log(response?.data.result);
+        dispatch(setUser({
+          name: 'User',
+        }));
         enqueueSnackbar("User logged in successfully", {
           variant: "success",
           autoHideDuration: 2000,
         });
-        navigate("/admin");
+
+        if (response.data?.result.role == "Admin") {
+          // <Navigate to='/admin' />
+          navigate("/admin");
+        }
       } else {
         enqueueSnackbar("Invalid credentials", {
           variant: "error",

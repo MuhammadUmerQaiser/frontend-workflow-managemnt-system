@@ -1,17 +1,14 @@
 // AddEmployeeForm.js
-
-import React, { useMemo, useState } from "react";
-import { generateRandomPassword } from "../../../helpers/helpers";
+import React, { useMemo, useState, useEffect } from "react";
 import AuthButton from "../../common/Button/AuthButton";
 import { useSnackbar } from "notistack";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { EmployeeService } from "../../../services/admin/employees.service";
 
 const AddEmployeeForm = () => {
   const [employeeData, setEmployeeData] = useState({
     name: "",
     email: "",
-    password: "",
     domain: "",
     designation: "",
     member: "",
@@ -22,14 +19,36 @@ const AddEmployeeForm = () => {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   let navigate = useNavigate();
+  const params = useParams();
   const employeeService = useMemo(() => new EmployeeService(), []);
 
-  const generatePassword = () => {
-    const password = generateRandomPassword();
-    setEmployeeData({
-      ...employeeData,
-      password: password,
-    });
+  useEffect(() => {
+    getEmployeeDetail();
+  }, []);
+
+  const getEmployeeDetail = async () => {
+    try {
+      const response = await employeeService.getSingleEmployeeDetailById(
+        params.employeeId
+      );
+      if (response.status === 200) {
+        setEmployeeData({
+          name: response.data?.name,
+          email: response.data?.email,
+          domain: response.data?.domain,
+          designation: response.data?.designation,
+          member: response.data?.member,
+          team: response.data?.team,
+          grade: response.data?.grade,
+          tasks: response.data?.tasks,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -51,21 +70,11 @@ const AddEmployeeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const {
-      name,
-      email,
-      password,
-      domain,
-      designation,
-      member,
-      team,
-      grade,
-      tasks,
-    } = employeeData;
+    const { name, email, domain, designation, member, team, grade, tasks } =
+      employeeData;
 
     if (
       !email ||
-      !password ||
       !name ||
       !domain ||
       !designation ||
@@ -82,10 +91,13 @@ const AddEmployeeForm = () => {
 
     try {
       setLoading(true);
-      const response = await employeeService.addEmployees(employeeData);
+      const response = await employeeService.updateEmployee(
+        params.employeeId,
+        employeeData
+      );
 
       if (response.status === 200) {
-        enqueueSnackbar("Employee Created Successfully", {
+        enqueueSnackbar("Employee Edit Successfully", {
           variant: "success",
           autoHideDuration: 2000,
         });
@@ -102,7 +114,6 @@ const AddEmployeeForm = () => {
     setEmployeeData({
       name: "",
       email: "",
-      password: "",
       domain: "",
       designation: "",
       member: "",
@@ -116,7 +127,7 @@ const AddEmployeeForm = () => {
     <div className="container mt-4">
       <div className="card">
         <div className="card-body">
-          <h5 className="card-title">Create Employee</h5>
+          <h5 className="card-title">Edit Employee {employeeData.name}</h5>
           <form className="row g-3" method="POST">
             <div className="col-6">
               <label htmlFor="name" className="form-label">
@@ -143,31 +154,8 @@ const AddEmployeeForm = () => {
                 name="email"
                 value={employeeData.email}
                 onChange={handleChange}
-                required
+                disabled
               />
-            </div>
-            <div className="d-flex" style={{ gap: "30px" }}>
-              <div className="col-8">
-                <label htmlFor="email" className="form-label">
-                  Password
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="password"
-                  value={employeeData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                style={{ width: "150px", height: "40px", marginTop: "30px" }}
-                onClick={() => generatePassword()}
-              >
-                Generate Password
-              </button>
             </div>
             <div className="col-6">
               <label htmlFor="domain" className="form-label">
@@ -287,10 +275,10 @@ const AddEmployeeForm = () => {
             </div>
             <div>
               <AuthButton
-                label={"Add Employee"}
+                label={"Edit Employee"}
                 onClick={handleSubmit}
                 loading={loading}
-                className="btn btn-success mt-3"
+                className="btn btn-primary mt-3"
               />
             </div>
           </form>

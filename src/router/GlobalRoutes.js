@@ -10,10 +10,10 @@ function GlobalRouter() {
     <React.Fragment>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/verify-account" element={<VerificationPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/" exact  element={<SignupPage />} />
+          <Route path="/login" exact  element={<LoginPage />} />
+          <Route path="/verify-account" exact  element={<VerificationPage />} />
+          <Route path="/forgot-password" exact  element={<ForgotPasswordPage />} />
         </Routes>
       </BrowserRouter>
     </React.Fragment>

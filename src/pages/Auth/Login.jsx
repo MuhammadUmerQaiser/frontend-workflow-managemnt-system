@@ -41,17 +41,14 @@ const Login = () => {
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        console.log(response?.data.result);
-        dispatch(setUser({
-          name: 'User',
-        }));
+        localStorage.setItem('auth', JSON.stringify(response?.data.result))
+        // dispatch(setUser(response?.data.result));
         enqueueSnackbar("User logged in successfully", {
           variant: "success",
           autoHideDuration: 2000,
         });
 
         if (response.data?.result.role == "Admin") {
-          // <Navigate to='/admin' />
           navigate("/admin");
         }
       } else {

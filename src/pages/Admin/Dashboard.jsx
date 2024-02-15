@@ -1,20 +1,12 @@
-import { useSelector } from "react-redux";
 import AdminLayout from "../../components/Admin/AdminLayout";
-import { useAppSelector } from "../../store";
-import { useEffect } from "react";
 
 const Dashboard = () => {
-  const { user } = useAppSelector((state) => state.auth);
-  useEffect(() => {
-    console.log(user);
-  }, []);
   return (
     <>
       <AdminLayout>
         <main id="main" className="main">
           <div className="pagetitle">
-            {/* <h1>Dashboard</h1> */}
-            <h1>{user}</h1>
+            <h1>Dashboard</h1>
             <nav>
               <ol className="breadcrumb">
                 <li className="breadcrumb-item">

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useMemo } from "react";
-import { useNavigate, Link, Navigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../../styles/auth/styles.css";
 import { useSnackbar } from "notistack";
 import { AuthService } from "../../services/Auth/index.service";
@@ -16,7 +16,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
@@ -50,6 +50,8 @@ const Login = () => {
 
         if (response.data?.result.role == "Admin") {
           navigate("/admin");
+        }else{
+          navigate("/user");
         }
       } else {
         enqueueSnackbar("Invalid credentials", {

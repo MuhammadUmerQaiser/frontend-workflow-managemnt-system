@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import AdminLayout from "../../../components/Admin/AdminLayout";
+import UserLayout from "../../../components/User/UserLayout";
 import Table from "../../../components/common/table/Table";
 import { EmployeeService } from "../../../services/admin/employees.service";
 import { useSnackbar } from "notistack";
@@ -59,7 +59,7 @@ const Employees = () => {
 
   return (
     <>
-      <AdminLayout>
+      <UserLayout>
         <main id="main" className="main">
           <div className="pagetitle">
             <h1>Employees</h1>
@@ -112,7 +112,7 @@ const Employees = () => {
             </div>
           </section>
         </main>
-      </AdminLayout>
+      </UserLayout>
     </>
   );
 };

@@ -1,11 +1,11 @@
 import React from "react";
 import AddEmployeeFormComponent from "../../../components/Admin/employees/AddEmployeeFormComponent";
-import AdminLayout from "../../../components/Admin/AdminLayout";
+import UserLayout from "../../../components/User/UserLayout";
 import { Link } from "react-router-dom";
 
 const AddEmployeeForm = () => {
   return (
-    <AdminLayout>
+    <UserLayout>
       <main id="main" className="main">
         <div className="pagetitle">
           <h1>Employees</h1>
@@ -29,7 +29,7 @@ const AddEmployeeForm = () => {
           </div>
         </section>
       </main>
-    </AdminLayout>
+    </UserLayout>
   );
 };
 

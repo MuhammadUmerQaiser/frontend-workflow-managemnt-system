@@ -18,7 +18,7 @@ const AddEmployeeForm = () => {
   });
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const params = useParams();
   const employeeService = useMemo(() => new EmployeeService(), []);
 

@@ -17,7 +17,7 @@ const Signup = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();

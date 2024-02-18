@@ -16,7 +16,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
@@ -38,16 +38,21 @@ const Login = () => {
         email: credentials.email,
         password: credentials.password,
       });
-      console.log("res:", response);
-      if (response.data.result.proceed === "ok") {
+      if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        dispatch(setUser(response?.data))
+        localStorage.setItem('auth', JSON.stringify(response?.data.result))
+        // dispatch(setUser(response?.data.result));
         enqueueSnackbar("User logged in successfully", {
           variant: "success",
           autoHideDuration: 2000,
         });
-        navigate("/admin");
+
+        if (response.data?.result.role == "Admin") {
+          navigate("/admin");
+        }else{
+          navigate("/user");
+        }
       } else {
         enqueueSnackbar("Invalid credentials", {
           variant: "error",
@@ -59,7 +64,6 @@ const Login = () => {
         variant: "error",
         autoHideDuration: 2000,
       });
-      console.log(error);
     } finally {
       setLoading(false);
     }

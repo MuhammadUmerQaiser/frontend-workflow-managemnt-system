@@ -17,7 +17,7 @@ const Signup = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const authService = useMemo(() => new AuthService(), []);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
@@ -38,11 +38,10 @@ const Signup = () => {
     try {
       setLoading(true);
       const response = await authService.signup(credentials);
-
-      if (response.data.proceed === "ok") {
+      if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        dispatch(setUser(response?.data))
+        dispatch(setUser(response?.data));
         enqueueSnackbar("Account Created Successfully", {
           variant: "success",
           autoHideDuration: 2000,
@@ -54,7 +53,6 @@ const Signup = () => {
         variant: "error",
         autoHideDuration: 2000,
       });
-      console.log(error);
     } finally {
       setLoading(false);
     }

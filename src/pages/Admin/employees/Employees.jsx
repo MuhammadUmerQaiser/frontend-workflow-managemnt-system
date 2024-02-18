@@ -1,66 +1,76 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import AdminLayout from "../../../components/Admin/AdminLayout";
+import UserLayout from "../../../components/User/UserLayout";
 import Table from "../../../components/common/table/Table";
+import { EmployeeService } from "../../../services/admin/employees.service";
+import { useSnackbar } from "notistack";
 
 const Employees = () => {
-  const fields = ['Sno', 'Name', 'Email', 'Domain', 'Designation', 'Action'];
-  const employees = [
-    {
-      sno: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      domain: "IT",
-      designation: "Software Engineer",
-    },
-    {
-      sno: 2,
-      name: "Jane Doe",
-      email: "jane.doe@example.com",
-      domain: "HR",
-      designation: "HR Manager",
-    },
-    {
-      sno: 3,
-      name: "Miles Morales",
-      email: "jane.doe@example.com",
-      domain: "HR",
-      designation: "HR Manager",
-    },
-    {
-      sno: 4,
-      name: "Gwen Stacy",
-      email: "jane.doe@example.com",
-      domain: "HR",
-      designation: "HR Manager",
-    },
-    {
-      sno: 5,
-      name: "Peter Parker",
-      email: "jane.doe@example.com",
-      domain: "HR",
-      designation: "HR Manager",
-    },
-    {
-      sno: 6,
-      name: "Tony Stark",
-      email: "jane.doe@example.com",
-      domain: "HR",
-      designation: "HR Manager",
-    },
-  ];
+  const fields = ["_id", "name", "email", "domain", "designation", "action"];
+  const [employees, setEmployees] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const employeeService = useMemo(() => new EmployeeService(), []);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    getListOfAllEmployees();
+  }, [currentPage || employees]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const getListOfAllEmployees = async () => {
+    try {
+      const response = await employeeService.getAllEmployees(currentPage);
+      if (response.status === 200) {
+        setEmployees(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const deleteEmployee = async (id) => {
+    try {
+      const response = await employeeService.deleteEmployee(id);
+      if (response.status === 200) {
+        getListOfAllEmployees();
+        enqueueSnackbar("Employee Deleted Successfully", {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   return (
     <>
-      <AdminLayout>
+      <UserLayout>
         <main id="main" className="main">
           <div className="pagetitle">
             <h1>Employees</h1>
             <nav>
               <ol className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <a href="index.html">Home</a>
+                  <Link to="/">Home</Link>
                 </li>
-                <li className="breadcrumb-item">Employees</li>
+                <li className="breadcrumb-item">
+                  <Link to="/admin/employees">Employees</Link>
+                </li>
                 <li className="breadcrumb-item active">Lists</li>
               </ol>
             </nav>
@@ -75,14 +85,24 @@ const Employees = () => {
                         <div className="d-flex align-items-start justify-content-between mb-3">
                           <h5 className="card-title">Employees</h5>
                           <Link
-                            to="/employees/create"
+                            to="/admin/employees/create"
                             className="btn btn-primary btn-sm mt-3"
                           >
                             Add New Employee
                           </Link>
                         </div>
                         <div className="table-reponsive">
-                          <Table fields={fields} employees={employees} />
+                          <Table
+                            fields={fields}
+                            data={employees}
+                            currentPage={currentPage}
+                            itemsPerPage={pageSize}
+                            totalPages={totalPages}
+                            handlePageChange={handlePageChange}
+                            deleteData={deleteEmployee}
+                            detailLink={"/admin/employee/detail"}
+                            editLink={"/admin/employee/edit"}
+                          />
                         </div>
                       </div>
                     </div>
@@ -92,7 +112,7 @@ const Employees = () => {
             </div>
           </section>
         </main>
-      </AdminLayout>
+      </UserLayout>
     </>
   );
 };

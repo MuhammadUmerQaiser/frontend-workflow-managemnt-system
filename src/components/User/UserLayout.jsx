@@ -11,7 +11,7 @@ import DashboardHeader from "./DashboardHeader.jsx";
 import DashboardSidebar from "./DashboardSidebar.jsx";
 import DashboardFooter from "./DashboardFooter.jsx";
 
-const AdminLayout = ({children}) => {
+const UserLayout = ({children}) => {
   return (
     <>
         <DashboardHeader></DashboardHeader>
@@ -22,4 +22,4 @@ const AdminLayout = ({children}) => {
   );
 };
 
-export default AdminLayout;
+export default UserLayout;

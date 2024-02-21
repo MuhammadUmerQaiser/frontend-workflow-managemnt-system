@@ -3,7 +3,7 @@ import React from 'react';
 
 const CircularLoader = () =>{
     return (
-        <CircularProgress size={20} color="inherit" /> 
+        <CircularProgress size={20} color="inherit"/> 
     )
 }
 

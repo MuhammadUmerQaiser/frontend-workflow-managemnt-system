@@ -10,8 +10,11 @@ const Table = ({
   totalPages,
   handlePageChange,
   deleteData,
-  detailLink,
-  editLink
+  detailLink = "/",
+  editLink,
+  showViewButton = true,
+  editModalButton = false,
+  editModalButtonId = "",
 }) => {
   return (
     <div className="table-responsive">
@@ -41,20 +44,36 @@ const Table = ({
                 >
                   <i className="bi bi-trash-fill"></i>
                 </button>
-                <Link
-                to={`${editLink}/${rowData["_id"]}`}
-                  className="btn btn-sm btn-primary"
-                  style={{ marginLeft: "10px" }}
-                >
-                  <i className="bi bi-journal"></i>
-                </Link>
-                <Link
-                  to={`${detailLink}/${rowData["_id"]}`}
-                  className="btn btn-sm btn-success"
-                  style={{ marginLeft: "10px" }}
-                >
-                  <i className="bi bi-eye-fill"></i>
-                </Link>
+                {editModalButton && (
+                  <button
+                    className="btn btn-sm btn-primary"
+                    style={{ marginLeft: "10px" }}
+                    data-bs-toggle="modal"
+                    data-bs-target={`#${editModalButtonId}`}
+                  >
+                    <i className="bi bi-journal"></i>
+                  </button>
+                )}
+
+                {!editModalButton && (
+                  <Link
+                    to={`${editLink}/${rowData["_id"]}`}
+                    className="btn btn-sm btn-primary"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <i className="bi bi-journal"></i>
+                  </Link>
+                )}
+
+                {showViewButton && (
+                  <Link
+                    to={`${detailLink}/${rowData["_id"]}`}
+                    className="btn btn-sm btn-success"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <i className="bi bi-eye-fill"></i>
+                  </Link>
+                )}
               </td>
             </tr>
           ))}

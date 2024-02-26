@@ -27,3 +27,13 @@ export const isAuthenticated = () => {
     return false;
   }
 };
+
+export const roles = [
+  "Chariman",
+  "Senior Member",
+  "Member",
+  "Commissioner",
+  "Deputy Commissioner",
+  "Assistant Commissioner",
+  "SSTO",
+];

@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/Admin/Dashboard";
 import Employees from "../pages/Admin/employees/Employees";
-import Domain from "../pages/Admin/domains/Domain";
+import Domain from "../pages/Admin/general/domains/Domain";
 import Designation from "../pages/Admin/general/designations/Designation"
 import Team from "../pages/Admin/general/teams/Team";
 import Grade from "../pages/Admin/general/grades/Grade";

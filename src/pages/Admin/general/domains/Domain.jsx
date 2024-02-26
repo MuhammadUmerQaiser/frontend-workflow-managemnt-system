@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import UserLayout from "../../../components/User/UserLayout";
-import Table from "../../../components/common/table/Table";
-import AddModal from "../../../components/common/modal/AddModal";
-import EditModal from "../../../components/common/modal/EditModal";
+import UserLayout from "../../../../components/User/UserLayout";
+import Table from "../../../../components/common/table/Table";
+import AddModal from "../../../../components/common/modal/AddModal";
+import EditModal from "../../../../components/common/modal/EditModal";
 
 const Domain = () => {
   const fields = ["_id", "name", "action"];

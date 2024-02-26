@@ -79,6 +79,15 @@ const EmployeeDetail = () => {
 
                             <div className="row mt-3">
                               <div className="col-lg-3 col-md-4 label">
+                                <b>Role</b>
+                              </div>
+                              <div className="col-lg-9 col-md-8">
+                                {employee.role}
+                              </div>
+                            </div>
+
+                            <div className="row mt-3">
+                              <div className="col-lg-3 col-md-4 label">
                                 <b>Domain</b>
                               </div>
                               <div className="col-lg-9 col-md-8">

@@ -12,9 +12,14 @@ const Role = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [name, setName] = useState("");
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleChange = (e) => {
+    setName(e.taregt.value);
   };
 
   const deleteRole = async (id) => {
@@ -31,8 +36,9 @@ const Role = () => {
           <input
             type="text"
             className="form-control"
-            id="name"
             name="name"
+            value={name}
+            onChange={handleChange}
             required
           />
         </div>

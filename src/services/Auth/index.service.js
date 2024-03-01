@@ -7,7 +7,7 @@ export class AuthService {
   async login(data) {
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/login",
+        "http://localhost:5000/api/login",
         data
       );
       return response;
@@ -18,7 +18,7 @@ export class AuthService {
   async signup(data) {
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/admin-register",
+        "http://localhost:5000/api/admin-register",
         data
       );
       return response;
@@ -29,7 +29,7 @@ export class AuthService {
   async verifyAccount(otp, id) {
     try {
       const response = await axios.post(
-        `http://localhost:5000/auth/verify-otp/${id}`,
+        `http://localhost:5000/api/verify-otp/${id}`,
         otp
       );
       return response;

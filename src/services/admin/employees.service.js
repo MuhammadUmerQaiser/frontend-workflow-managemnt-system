@@ -8,7 +8,7 @@ export class EmployeeService {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:5000/auth/get-all-employees?page=${page}`,
+        `http://localhost:5000/api/get-all-employees?page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -24,7 +24,7 @@ export class EmployeeService {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/employee-signup",
+        "http://localhost:5000/api/employee-signup",
         data,
         {
           headers: {
@@ -41,7 +41,7 @@ export class EmployeeService {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.delete(
-        `http://localhost:5000/auth/delete-employee/${id}`,
+        `http://localhost:5000/api/delete-employee/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ export class EmployeeService {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:5000/auth/get-employee/${id}`,
+        `http://localhost:5000/api/get-employee/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ export class EmployeeService {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        `http://localhost:5000/auth/update-employee/${id}`,
+        `http://localhost:5000/api/update-employee/${id}`,
         data,
         {
           headers: {

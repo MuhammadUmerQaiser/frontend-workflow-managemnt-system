@@ -8,6 +8,7 @@ import EditModal from "../../../../components/common/modal/EditModal";
 const Task = () => {
   const fields = ["_id", "name", "action"];
   const [tasks, setTasks] = useState([{ _id: "1", name: "Task 1" }]);
+  const [editTaskData, setEditTaskData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -55,6 +56,10 @@ const Task = () => {
   const editTask = () => {
     console.log("edit");
     setLoading(true);
+  };
+
+  const handleRowDataOnEditClick = (data) => {
+    setEditTaskData(data);
   };
 
   return (
@@ -105,6 +110,7 @@ const Task = () => {
                             showViewButton={false}
                             editModalButton={true}
                             editModalButtonId={"taskEditModalForm"}
+                            handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
                       </div>

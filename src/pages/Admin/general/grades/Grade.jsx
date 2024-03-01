@@ -8,6 +8,7 @@ import EditModal from "../../../../components/common/modal/EditModal";
 const Grade = () => {
   const fields = ["_id", "name", "action"];
   const [grades, setGrades] = useState([{ _id: "1", name: "Grade 1" }]);
+  const [editGradeData, setEditGradeData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -69,6 +70,10 @@ const Grade = () => {
     setLoading(true);
   };
 
+  const handleRowDataOnEditClick = (data) => {
+    setEditGradeData(data);
+  };
+  
   return (
     <>
       <UserLayout>
@@ -117,6 +122,7 @@ const Grade = () => {
                             showViewButton={false}
                             editModalButton={true}
                             editModalButtonId={"gradeEditModalForm"}
+                            handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
                       </div>

@@ -8,6 +8,7 @@ import EditModal from "../../../../components/common/modal/EditModal";
 const Domain = () => {
   const fields = ["_id", "name", "action"];
   const [domains, setDomains] = useState([{ _id: "1", name: "Domain 1" }]);
+  const [editDomainData, setEditDomainData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -85,6 +86,10 @@ const Domain = () => {
     setLoading(true);
   };
 
+  const handleRowDataOnEditClick = (data) => {
+    setEditDomainData(data);
+  };
+
   return (
     <>
       <UserLayout>
@@ -133,6 +138,7 @@ const Domain = () => {
                             showViewButton={false}
                             editModalButton={true}
                             editModalButtonId={"domainEditModalForm"}
+                            handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
                       </div>

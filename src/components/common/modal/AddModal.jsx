@@ -14,6 +14,7 @@ const AddModal = ({ modalId, createItem, loading, children }) => {
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                id="addModalCloseButton"
               ></button>
             </div>
             <div className="modal-body">{children}</div>

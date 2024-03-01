@@ -15,6 +15,7 @@ const Table = ({
   showViewButton = true,
   editModalButton = false,
   editModalButtonId = "",
+  handleRowDataOnEditClick = null
 }) => {
   return (
     <div className="table-responsive">
@@ -50,6 +51,7 @@ const Table = ({
                     style={{ marginLeft: "10px" }}
                     data-bs-toggle="modal"
                     data-bs-target={`#${editModalButtonId}`}
+                    onClick={() => handleRowDataOnEditClick(rowData)}
                   >
                     <i className="bi bi-journal"></i>
                   </button>

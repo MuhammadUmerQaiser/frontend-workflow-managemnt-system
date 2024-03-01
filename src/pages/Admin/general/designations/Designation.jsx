@@ -8,6 +8,7 @@ import EditModal from "../../../../components/common/modal/EditModal";
 const Designation = () => {
   const fields = ["_id", "name", "action"];
   const [designations, setDesignations] = useState([{ _id: "1", name: "Designation 1" }]);
+  const [editDesignationData, setEditDesignationData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -85,6 +86,10 @@ const Designation = () => {
     setLoading(true);
   };
 
+  const handleRowDataOnEditClick = (data) => {
+    setEditDesignationData(data);
+  };
+
   return (
     <>
       <UserLayout>
@@ -133,6 +138,7 @@ const Designation = () => {
                             showViewButton={false}
                             editModalButton={true}
                             editModalButtonId={"designationEditModalForm"}
+                            handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
                       </div>

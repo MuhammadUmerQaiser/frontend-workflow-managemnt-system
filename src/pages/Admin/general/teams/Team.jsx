@@ -47,6 +47,7 @@ function getStyles(name, personName, theme) {
 const Team = () => {
   const fields = ["_id", "name", "action"];
   const [teams, setTeams] = useState([{ _id: "1", name: "Team 1" }]);
+  const [editTeamData, setEditTeamData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -58,9 +59,7 @@ const Team = () => {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      typeof value === "string" ? value.split(",") : value
-    );
+    setPersonName(typeof value === "string" ? value.split(",") : value);
   };
 
   const handlePageChange = (page) => {
@@ -197,6 +196,10 @@ const Team = () => {
     setLoading(true);
   };
 
+  const handleRowDataOnEditClick = (data) => {
+    setEditTeamData(data);
+  };
+
   return (
     <>
       <UserLayout>
@@ -245,6 +248,7 @@ const Team = () => {
                             showViewButton={false}
                             editModalButton={true}
                             editModalButtonId={"teamEditModalForm"}
+                            handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
                       </div>

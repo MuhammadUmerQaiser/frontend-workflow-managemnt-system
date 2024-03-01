@@ -4,26 +4,67 @@ import UserLayout from "../../../../components/User/UserLayout";
 import Table from "../../../../components/common/table/Table";
 import AddModal from "../../../../components/common/modal/AddModal";
 import EditModal from "../../../../components/common/modal/EditModal";
+import { AdminService } from "../../../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 
 const Role = () => {
   const fields = ["_id", "name", "action"];
-  const [roles, setRoles] = useState([{ _id: "1", name: "Role 1" }]);
+  const [roles, setRoles] = useState([]);
+  const [editRoleData, setEditRoleData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
+  const [editRoleName, setEditRoleName] = useState("");
+  const adminService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
   const handleChange = (e) => {
-    setName(e.taregt.value);
+    setName(e.target.value);
+  };
+
+  const getAllRoles = async () => {
+    try {
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-roles?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
+      if (response.status == 200) {
+        setRoles(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const deleteRole = async (id) => {
-    console.log("delete");
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-role/${id}`;
+      const response = await adminService.deleteData(endpoint, id);
+      if (response.status === 200) {
+        getAllRoles();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const addModalForm = () => {
@@ -58,22 +99,114 @@ const Role = () => {
             className="form-control"
             id="name"
             name="name"
-            required
+            value={editRoleName}
+            onChange={(e) => setEditRoleName(e.target.value)}
           />
         </div>
       </form>
     );
   };
 
-  const createRole = () => {
-    console.log("create");
-    setLoading(true);
+  const createRole = async (e) => {
+    e.preventDefault();
+    if (!name) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-role`;
+      const data = { name: name };
+      const response = await adminService.postData(endpoint, data);
+      if (response.status == 200) {
+        getAllRoles();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setName("");
+        //close the modal
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton) {
+          addModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status == 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const editRole = () => {
-    console.log("edit");
-    setLoading(true);
+  const editRole = async (e) => {
+    e.preventDefault();
+    if (!editRoleName) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-role/${editRoleData._id}`;
+      const data = { name: editRoleName };
+      const response = await adminService.putData(endpoint, data);
+      if (response.status == 200) {
+        getAllRoles();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setName("");
+        //close the modal
+        const editModalCloseButton = document.getElementById(
+          "editModalCloseButton"
+        );
+        if (editModalCloseButton) {
+          editModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status == 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleRowDataOnEditClick = (data) => {
+    setEditRoleData(data);
+    setEditRoleName(data.name);
+  };
+
+  useEffect(() => {
+    getAllRoles();
+  }, [currentPage || roles]);
 
   return (
     <>
@@ -123,6 +256,7 @@ const Role = () => {
                             showViewButton={false}
                             editModalButton={true}
                             editModalButtonId={"roleEditModalForm"}
+                            handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
                       </div>

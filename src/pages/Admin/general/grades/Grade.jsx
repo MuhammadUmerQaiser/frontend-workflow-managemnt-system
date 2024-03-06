@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import UserLayout from "../../../../components/User/UserLayout";
 import Table from "../../../../components/common/table/Table";
 import AddModal from "../../../../components/common/modal/AddModal";
 import EditModal from "../../../../components/common/modal/EditModal";
-
+import { AdminService } from "../../../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 const Grade = () => {
   const fields = ["_id", "name", "action"];
   const [grades, setGrades] = useState([{ _id: "1", name: "Grade 1" }]);
@@ -14,6 +16,9 @@ const Grade = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [editGradeName, setEditGradeName] = useState("");
+  const [name, setName] = useState("");
+  const adminService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -22,7 +27,25 @@ const Grade = () => {
   const handleChange = (e) => {
     setName(e.target.value);
   };
-
+  const getAllGrades = async () => {
+    try {
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-grades?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setGrades(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
   const deleteGrade = async (id) => {
     try {
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-grade/${id}`;
@@ -132,7 +155,7 @@ const Grade = () => {
   };
 
 
-  const editGrade = async() => {
+  const editGrade = async(e) => {
     e.preventDefault();
     if (!editGradeName) {
       enqueueSnackbar("Please fill in all the fields", {

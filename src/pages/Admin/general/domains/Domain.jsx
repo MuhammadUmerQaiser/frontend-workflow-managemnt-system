@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import UserLayout from "../../../../components/User/UserLayout";
 import Table from "../../../../components/common/table/Table";
 import AddModal from "../../../../components/common/modal/AddModal";
 import EditModal from "../../../../components/common/modal/EditModal";
-
+import { AdminService } from "../../../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 const Domain = () => {
   const fields = ["_id", "name", "action"];
   const [domains, setDomains] = useState([{ _id: "1", name: "Domain 1" }]);
@@ -14,9 +16,18 @@ const Domain = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [editDomainName, setEditDomainName] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [domainData, setDomainData] = useState({
+    name: "",
+    isActive: false,
+  });
+  const adminService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
   const handleChange = (e) => {
-    setName(e.target.value);
+    setDomainData({
+      ...domainData,
+      [e.target.name]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+    });
   };
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -28,8 +39,8 @@ const Domain = () => {
         process.env.REACT_APP_BACKEND_URL
       }/get-all-domains?page=${currentPage}&paginatedData=${true}`;
       const response = await adminService.getData(endpoint);
-      if (response.status == 200) {
-        setRoles(response?.data?.data);
+      if (response.status === 200) {
+        setDomains(response?.data?.data);
         setCurrentPage(response?.data?.currentPage);
         setPageSize(response?.data?.pageSize);
         setTotalPages(response?.data?.totalPages);
@@ -41,7 +52,6 @@ const Domain = () => {
       });
     }
   };
-
 
   const deleteDomain = async (id) => {
     try {
@@ -75,7 +85,7 @@ const Domain = () => {
             className="form-control"
             id="name"
             name="name"
-            value={name}
+            value={domainData.name}
             onChange={handleChange}
             required
           />
@@ -85,7 +95,13 @@ const Domain = () => {
             Active
           </label>
           <div className="form-check form-switch">
-            <input className="form-check-input" type="checkbox" />
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={domainData.isActive}
+              name="isActive"
+              onChange={handleChange}
+            />
           </div>
         </div>
       </form>
@@ -123,28 +139,31 @@ const Domain = () => {
 
   const createDomain = async (e) => {
     e.preventDefault();
-    if (!name) {
+    if (!domainData.name) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
         autoHideDuration: 2000,
       });
       setLoading(false);
-    console.log("create");
-    setLoading(true);
-    return;
+      console.log("create",domainData);
+      setLoading(true);
+      return;
     }
     try {
       setLoading(true);
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-domain`;
-      const data = { name: name };
-      const response = await adminService.postData(endpoint, data);
-      if (response.status == 200) {
-        getAllRoles();
+      // const data = { name: name };
+      const response = await adminService.postData(endpoint, domainData);
+      if (response.status === 200) {
+        getAllDomains();
         enqueueSnackbar(response?.data?.message, {
           variant: "success",
           autoHideDuration: 2000,
         });
-        setName("");
+        setDomainData({
+          name:"",
+          isActive:false
+        });
         //close the modal
         const addModalCloseButton = document.getElementById(
           "addModalCloseButton"
@@ -153,12 +172,13 @@ const Domain = () => {
           addModalCloseButton.click();
         }
       }
-      if (response?.response?.status == 500) {
+      if (response?.response?.status === 500) {
         enqueueSnackbar(response?.response?.data?.message, {
           variant: "error",
           autoHideDuration: 2000,
         });
       }
+      console.log(domainData)
     } catch (error) {
       enqueueSnackbar("An error occurred", {
         variant: "error",
@@ -168,7 +188,6 @@ const Domain = () => {
       setLoading(false);
     }
   };
-
 
   const editDomain = async (e) => {
     e.preventDefault();
@@ -185,13 +204,16 @@ const Domain = () => {
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-domain/${editDomainData._id}`;
       const data = { name: editDomainName };
       const response = await adminService.putData(endpoint, data);
-      if (response.status == 200) {
+      if (response.status === 200) {
         getAllDomains();
         enqueueSnackbar(response?.data?.message, {
           variant: "success",
           autoHideDuration: 2000,
         });
-        setName("");
+        setDomainData({
+          name:"",
+          isActive:false
+        });
         //close the modal
         const editModalCloseButton = document.getElementById(
           "editModalCloseButton"
@@ -200,7 +222,7 @@ const Domain = () => {
           editModalCloseButton.click();
         }
       }
-      if (response?.response?.status == 500) {
+      if (response?.response?.status === 500) {
         enqueueSnackbar(response?.response?.data?.message, {
           variant: "error",
           autoHideDuration: 2000,
@@ -218,9 +240,9 @@ const Domain = () => {
 
   const handleRowDataOnEditClick = (data) => {
     setEditDomainData(data);
-    setEditRoleName(data.name);
+    // setEditRoleName(data.name);
   };
-  
+
   useEffect(() => {
     getAllDomains();
   }, [currentPage || domains]);
@@ -302,6 +324,5 @@ const Domain = () => {
     </>
   );
 };
-
 
 export default Domain;

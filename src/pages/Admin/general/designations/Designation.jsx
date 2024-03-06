@@ -1,25 +1,78 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import UserLayout from "../../../../components/User/UserLayout";
 import Table from "../../../../components/common/table/Table";
 import AddModal from "../../../../components/common/modal/AddModal";
 import EditModal from "../../../../components/common/modal/EditModal";
+import { AdminService } from "../../../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 
 const Designation = () => {
   const fields = ["_id", "name", "action"];
-  const [designations, setDesignations] = useState([{ _id: "1", name: "Designation 1" }]);
+  const [designations, setDesignations] = useState([
+    { _id: "1", name: "Designation 1" },
+  ]);
   const [editDesignationData, setEditDesignationData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-
+  const [designationData, setDesignationData] = useState({
+    name: "",
+    isActive: false,
+  });
+  const adminService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const handleChange = (e) => {
+    setDesignationData({
+      ...designationData,
+      [e.target.name]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+    });
+  };
+
+  const getAllDesignations = async () => {
+    try {
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-designations?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setDesignations(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   const deleteDesignation = async (id) => {
-    console.log("delete");
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-designation/${id}`;
+      const response = await adminService.deleteData(endpoint, id);
+      if (response.status === 200) {
+        getAllDesignations();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const addModalForm = () => {
@@ -34,6 +87,8 @@ const Designation = () => {
             className="form-control"
             id="name"
             name="name"
+            value={designationData.name}
+            onChange={handleChange}
             required
           />
         </div>
@@ -42,7 +97,13 @@ const Designation = () => {
             Active
           </label>
           <div className="form-check form-switch">
-            <input className="form-check-input" type="checkbox" />
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={designationData.isActive}
+              name="isActive"
+              onChange={handleChange}
+            />
           </div>
         </div>
       </form>
@@ -76,9 +137,55 @@ const Designation = () => {
     );
   };
 
-  const createDesignation = () => {
-    console.log("create");
-    setLoading(true);
+  const createDesignation = async (e) => {
+    e.preventDefault();
+    if (!designationData.name) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      console.log("create", designationData);
+      setLoading(true);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-designation`;
+      // const data = { name: name };
+      const response = await adminService.postData(endpoint, designationData);
+      if (response.status === 200) {
+        getAllDesignations();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setDesignationData({
+          name: "",
+          isActive: false,
+        });
+        //close the modal
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton) {
+          addModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const editDesignation = () => {
@@ -90,6 +197,9 @@ const Designation = () => {
     setEditDesignationData(data);
   };
 
+  useEffect(() => {
+    getAllDesignations();
+  }, [currentPage || designations]);
   return (
     <>
       <UserLayout>

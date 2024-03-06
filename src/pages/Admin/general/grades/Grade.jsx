@@ -13,12 +13,33 @@ const Grade = () => {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [editGradeName, setEditGradeName] = useState("");
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const handleChange = (e) => {
+    setName(e.target.value);
+  };
+
   const deleteGrade = async (id) => {
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-grade/${id}`;
+      const response = await adminService.deleteData(endpoint, id);
+      if (response.status === 200) {
+        getAllGrades();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
     console.log("delete");
   };
 
@@ -34,6 +55,8 @@ const Grade = () => {
             className="form-control"
             id="name"
             name="name"
+            value={name}
+            onChange={handleChange}
             required
           />
         </div>
@@ -53,6 +76,8 @@ const Grade = () => {
             className="form-control"
             id="name"
             name="name"
+            value={editGradeName}
+            onChange={(e) => setEditGradeName(e.target.value)}
             required
           />
         </div>
@@ -60,19 +85,107 @@ const Grade = () => {
     );
   };
 
-  const createGrade = () => {
-    console.log("create");
-    setLoading(true);
+  const createGrade = async(e) => {
+    e.preventDefault();
+    if (!name) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-grade`;
+      const data = { name: name };
+      const response = await adminService.postData(endpoint, data);
+      if (response.status === 200) {
+        getAllGrades();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setName("");
+        //close the modal
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton) {
+          addModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(true);
+    }
   };
 
-  const editGrade = () => {
-    console.log("edit");
-    setLoading(true);
+
+  const editGrade = async() => {
+    e.preventDefault();
+    if (!editGradeName) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-grade/${editGradeData._id}`;
+      const data = { name: editGradeName };
+      const response = await adminService.putData(endpoint, data);
+      if (response.status === 200) {
+        getAllGrades();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setName("");
+        //close the modal
+        const editModalCloseButton = document.getElementById(
+          "editModalCloseButton"
+        );
+        if (editModalCloseButton) {
+          editModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(true);
+    }
   };
 
   const handleRowDataOnEditClick = (data) => {
     setEditGradeData(data);
+    setEditGradeName(data.name);
   };
+
+  useEffect(() => {
+    getAllGrades();
+  }, [currentPage || grades]);
   
   return (
     <>

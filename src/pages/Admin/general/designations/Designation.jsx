@@ -13,7 +13,10 @@ const Designation = () => {
   const [designations, setDesignations] = useState([
     { _id: "1", name: "Designation 1" },
   ]);
-  const [editDesignationData, setEditDesignationData] = useState({});
+  const [editDesignationData, setEditDesignationData] = useState({
+    name: "",
+    isActive: false,
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
@@ -35,7 +38,19 @@ const Designation = () => {
         e.target.type === "checkbox" ? e.target.checked : e.target.value,
     });
   };
+  const handleEditChange = (e) => {
+    setEditDesignationData({
+      ...editDesignationData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
+  const handleCheckboxEditChange = (e) => {
+    setEditDesignationData({
+      ...editDesignationData,
+      [e.target.name]: e.target.checked,
+    });
+  };
   const getAllDesignations = async () => {
     try {
       const endpoint = `${
@@ -123,6 +138,8 @@ const Designation = () => {
             id="name"
             name="name"
             required
+            value={editDesignationData.name}
+            onChange={handleEditChange}
           />
         </div>
         <div className="col-12">
@@ -130,7 +147,13 @@ const Designation = () => {
             Active
           </label>
           <div className="form-check form-switch">
-            <input className="form-check-input" type="checkbox" />
+            <input
+              className="form-check-input"
+              type="checkbox"
+              checked={editDesignationData.isActive}
+              onChange={handleCheckboxEditChange}
+              name="isActive"
+            />
           </div>
         </div>
       </form>
@@ -188,9 +211,56 @@ const Designation = () => {
     }
   };
 
-  const editDesignation = () => {
-    console.log("edit");
-    setLoading(true);
+  const editDesignation = async (e) => {
+    e.preventDefault();
+    if (!editDesignationData.name) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-designation/${editDesignationData._id}`;
+      // const data = { name: editDomainName };
+      const response = await adminService.putData(
+        endpoint,
+        editDesignationData
+      );
+      if (response.status === 200) {
+        getAllDesignations();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setEditDesignationData({
+          name: "",
+          isActive: false,
+        });
+        //close the modal
+        const editModalCloseButton = document.getElementById(
+          "editModalCloseButton"
+        );
+        if (editModalCloseButton) {
+          editModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRowDataOnEditClick = (data) => {

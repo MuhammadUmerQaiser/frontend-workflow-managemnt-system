@@ -47,8 +47,7 @@ const Login = () => {
           variant: "success",
           autoHideDuration: 2000,
         });
-
-        if (response.data?.result.role == "Admin") {
+        if (response.data?.result.role === "Admin") {
           navigate("/admin");
         }else{
           navigate("/user");

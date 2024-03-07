@@ -10,11 +10,13 @@ import { useSnackbar } from "notistack";
 const Domain = () => {
   const fields = ["_id", "name", "action"];
   const [domains, setDomains] = useState([{ _id: "1", name: "Domain 1" }]);
-  const [editDomainData, setEditDomainData] = useState({});
+  const [editDomainData, setEditDomainData] = useState({
+    name:"",
+    isActive:false
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const [editDomainName, setEditDomainName] = useState("");
   const [loading, setLoading] = useState(false);
   const [domainData, setDomainData] = useState({
     name: "",
@@ -27,6 +29,19 @@ const Domain = () => {
       ...domainData,
       [e.target.name]:
         e.target.type === "checkbox" ? e.target.checked : e.target.value,
+    });
+  };
+  const handleEditChange = (e) => {
+    setEditDomainData({
+      ...editDomainData,
+      [e.target.name]: e.target.value,
+    });
+  };
+  
+  const handleCheckboxEditChange = (e) => {
+    setEditDomainData({
+      ...editDomainData,
+      [e.target.name]: e.target.checked,
     });
   };
   const handlePageChange = (page) => {
@@ -70,7 +85,6 @@ const Domain = () => {
         autoHideDuration: 2000,
       });
     }
-    console.log("delete");
   };
 
   const addModalForm = () => {
@@ -120,17 +134,24 @@ const Domain = () => {
             className="form-control"
             id="name"
             name="name"
-            value={editDomainName}
-            onChange={(e) => setEditDomainName(e.target.value)}
+            value={editDomainData.name}
+            onChange={handleEditChange}
             required
           />
         </div>
         <div className="col-12">
-          <label htmlFor="name" className="form-label">
+          <label htmlFor="isActive" className="form-label">
             Active
           </label>
           <div className="form-check form-switch">
-            <input className="form-check-input" type="checkbox" />
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="isActive"
+              name="isActive"
+              checked={editDomainData.isActive}
+              onChange={handleCheckboxEditChange}
+            />
           </div>
         </div>
       </form>
@@ -145,7 +166,6 @@ const Domain = () => {
         autoHideDuration: 2000,
       });
       setLoading(false);
-      console.log("create",domainData);
       setLoading(true);
       return;
     }
@@ -161,8 +181,8 @@ const Domain = () => {
           autoHideDuration: 2000,
         });
         setDomainData({
-          name:"",
-          isActive:false
+          name: "",
+          isActive: false,
         });
         //close the modal
         const addModalCloseButton = document.getElementById(
@@ -178,7 +198,6 @@ const Domain = () => {
           autoHideDuration: 2000,
         });
       }
-      console.log(domainData)
     } catch (error) {
       enqueueSnackbar("An error occurred", {
         variant: "error",
@@ -191,7 +210,7 @@ const Domain = () => {
 
   const editDomain = async (e) => {
     e.preventDefault();
-    if (!editDomainName) {
+    if (!editDomainData.name) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
         autoHideDuration: 2000,
@@ -202,8 +221,8 @@ const Domain = () => {
     try {
       setLoading(true);
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-domain/${editDomainData._id}`;
-      const data = { name: editDomainName };
-      const response = await adminService.putData(endpoint, data);
+      // const data = { name: editDomainName };
+      const response = await adminService.putData(endpoint, editDomainData);
       if (response.status === 200) {
         getAllDomains();
         enqueueSnackbar(response?.data?.message, {
@@ -211,8 +230,8 @@ const Domain = () => {
           autoHideDuration: 2000,
         });
         setDomainData({
-          name:"",
-          isActive:false
+          name: "",
+          isActive: false,
         });
         //close the modal
         const editModalCloseButton = document.getElementById(
@@ -234,13 +253,12 @@ const Domain = () => {
         autoHideDuration: 2000,
       });
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 
   const handleRowDataOnEditClick = (data) => {
     setEditDomainData(data);
-    // setEditRoleName(data.name);
   };
 
   useEffect(() => {

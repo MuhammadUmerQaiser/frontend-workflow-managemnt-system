@@ -10,8 +10,12 @@ const Table = ({
   totalPages,
   handlePageChange,
   deleteData,
-  detailLink,
-  editLink
+  detailLink = "/",
+  editLink,
+  showViewButton = true,
+  editModalButton = false,
+  editModalButtonId = "",
+  handleRowDataOnEditClick = null,
 }) => {
   return (
     <div className="table-responsive">
@@ -28,12 +32,24 @@ const Table = ({
         <tbody>
           {data.map((rowData, rowIndex) => (
             <tr key={rowIndex}>
-              {fields.map(
-                (field, fieldIndex) =>
-                  field !== "action" && (
-                    <td key={fieldIndex}>{rowData[field]}</td>
-                  )
-              )}
+              {fields.map((field, fieldIndex) => {
+                if (field !== "action" && field != "active") {
+                  return <td key={fieldIndex}>{rowData[field]}</td>;
+                } else if (field !== "action" && field == "active") {
+                  return (
+                    <td key={fieldIndex}>
+                      <span
+                        className={`badge bg-${
+                          rowData["isActive"] ? "success" : "danger"
+                        }`}
+                      >
+                        {rowData["isActive"] ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                  );
+                }
+                return null;
+              })}
               <td>
                 <button
                   className="btn btn-sm btn-danger"
@@ -41,20 +57,37 @@ const Table = ({
                 >
                   <i className="bi bi-trash-fill"></i>
                 </button>
-                <Link
-                to={`${editLink}/${rowData["_id"]}`}
-                  className="btn btn-sm btn-primary"
-                  style={{ marginLeft: "10px" }}
-                >
-                  <i className="bi bi-journal"></i>
-                </Link>
-                <Link
-                  to={`${detailLink}/${rowData["_id"]}`}
-                  className="btn btn-sm btn-success"
-                  style={{ marginLeft: "10px" }}
-                >
-                  <i className="bi bi-eye-fill"></i>
-                </Link>
+                {editModalButton && (
+                  <button
+                    className="btn btn-sm btn-primary"
+                    style={{ marginLeft: "10px" }}
+                    data-bs-toggle="modal"
+                    data-bs-target={`#${editModalButtonId}`}
+                    onClick={() => handleRowDataOnEditClick(rowData)}
+                  >
+                    <i className="bi bi-journal"></i>
+                  </button>
+                )}
+
+                {!editModalButton && (
+                  <Link
+                    to={`${editLink}/${rowData["_id"]}`}
+                    className="btn btn-sm btn-primary"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <i className="bi bi-journal"></i>
+                  </Link>
+                )}
+
+                {showViewButton && (
+                  <Link
+                    to={`${detailLink}/${rowData["_id"]}`}
+                    className="btn btn-sm btn-success"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <i className="bi bi-eye-fill"></i>
+                  </Link>
+                )}
               </td>
             </tr>
           ))}

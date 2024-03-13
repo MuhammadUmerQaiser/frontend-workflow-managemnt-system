@@ -4,6 +4,7 @@ import AuthButton from "../../common/Button/AuthButton";
 import { useSnackbar } from "notistack";
 import { useNavigate, useParams } from "react-router-dom";
 import { EmployeeService } from "../../../services/admin/employees.service";
+import { roles } from "../../../helpers/helpers";
 
 const AddEmployeeForm = () => {
   const [employeeData, setEmployeeData] = useState({
@@ -11,6 +12,7 @@ const AddEmployeeForm = () => {
     email: "",
     domain: "",
     designation: "",
+    role: "",
     member: "",
     team: "",
     grade: "",
@@ -37,6 +39,7 @@ const AddEmployeeForm = () => {
           email: response.data?.email,
           domain: response.data?.domain,
           designation: response.data?.designation,
+          role: response.data?.role,
           member: response.data?.member,
           team: response.data?.team,
           grade: response.data?.grade,
@@ -70,7 +73,7 @@ const AddEmployeeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, domain, designation, member, team, grade, tasks } =
+    const { name, email, domain, designation, role, member, team, grade, tasks } =
       employeeData;
 
     if (
@@ -80,8 +83,9 @@ const AddEmployeeForm = () => {
       !designation ||
       !member ||
       !grade ||
-      !tasks
-    ) {
+      !tasks ||
+      !role
+    ) { 
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
       });
@@ -156,6 +160,26 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
                 disabled
               />
+            </div>
+            <div className="col-6">
+              <label htmlFor="domain" className="form-label">
+                Roles
+              </label>
+              <select
+                className="form-select"
+                name="role"
+                value={employeeData.role}
+                onChange={handleChange}
+              >
+                <option value="">Select Role</option>
+                {roles.map((role, index) => {
+                  return (
+                    <option key={index} value={role}>
+                      {role}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <div className="col-6">
               <label htmlFor="domain" className="form-label">

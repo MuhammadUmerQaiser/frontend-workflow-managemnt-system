@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/User/Dashboard";
+import CreateUserWorkflow from "../pages/User/workflow/CreateUserWorkflow";
 import UserProtectedRoutes from "./RouteProtection/UserProtectedRoutes";
 
 function UserRoutes() {
@@ -10,6 +11,9 @@ function UserRoutes() {
         <Routes>
           <Route path="/user" exact Component={UserProtectedRoutes}>
             <Route path="/user" exact Component={Dashboard} />
+          </Route>
+          <Route path="/user/workflow" exact Component={UserProtectedRoutes}>
+            <Route path="/user/workflow" exact Component={CreateUserWorkflow} />
           </Route>
         </Routes>
       </BrowserRouter>

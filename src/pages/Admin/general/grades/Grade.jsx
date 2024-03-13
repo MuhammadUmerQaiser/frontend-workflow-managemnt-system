@@ -197,7 +197,7 @@ const Grade = () => {
         autoHideDuration: 2000,
       });
     } finally {
-      setLoading(true);
+      setLoading(false);
     }
   };
 

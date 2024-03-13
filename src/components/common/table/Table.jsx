@@ -15,7 +15,7 @@ const Table = ({
   showViewButton = true,
   editModalButton = false,
   editModalButtonId = "",
-  handleRowDataOnEditClick = null
+  handleRowDataOnEditClick = null,
 }) => {
   return (
     <div className="table-responsive">
@@ -32,12 +32,24 @@ const Table = ({
         <tbody>
           {data.map((rowData, rowIndex) => (
             <tr key={rowIndex}>
-              {fields.map(
-                (field, fieldIndex) =>
-                  field !== "action" && (
-                    <td key={fieldIndex}>{rowData[field]}</td>
-                  )
-              )}
+              {fields.map((field, fieldIndex) => {
+                if (field !== "action" && field != "active") {
+                  return <td key={fieldIndex}>{rowData[field]}</td>;
+                } else if (field !== "action" && field == "active") {
+                  return (
+                    <td key={fieldIndex}>
+                      <span
+                        className={`badge bg-${
+                          rowData["isActive"] ? "success" : "danger"
+                        }`}
+                      >
+                        {rowData["isActive"] ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                  );
+                }
+                return null;
+              })}
               <td>
                 <button
                   className="btn btn-sm btn-danger"

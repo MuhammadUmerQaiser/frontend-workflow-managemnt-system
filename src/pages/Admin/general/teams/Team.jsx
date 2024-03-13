@@ -10,6 +10,8 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
+import { AdminService } from "../../../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -45,29 +47,98 @@ function getStyles(name, personName, theme) {
 }
 
 const Team = () => {
-  const fields = ["_id", "name", "action"];
-  const [teams, setTeams] = useState([{ _id: "1", name: "Team 1" }]);
-  const [editTeamData, setEditTeamData] = useState({});
+  const fields = ["_id", "name", "member", "action"];
+  const [teams, setTeams] = useState([]);
+  const [editTeamData, setEditTeamData] = useState({
+    name: "",
+    member: "",
+    membersList: [],
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const [personName, setPersonName] = useState([]);
+  const [teamData, setTeamData] = useState({
+    name: "",
+    member: "",
+    membersList: [],
+  });
+  const adminService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(typeof value === "string" ? value.split(",") : value);
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name == "membersList") {
+      setTeamData({
+        ...teamData,
+        membersList: typeof value === "string" ? value.split(",") : value,
+      });
+    } else {
+      setTeamData({
+        ...teamData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name == "membersList") {
+      setEditTeamData({
+        ...editTeamData,
+        membersList: typeof value === "string" ? value.split(",") : value,
+      });
+    } else {
+      setEditTeamData({
+        ...editTeamData,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const getAllTeams = async () => {
+    try {
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-teams?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setTeams(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   const deleteTeam = async (id) => {
-    console.log("delete");
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-team/${id}`;
+      const response = await adminService.deleteData(endpoint, id);
+      if (response.status === 200) {
+        getAllTeams();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const addModalForm = () => {
@@ -83,6 +154,8 @@ const Team = () => {
             id="name"
             name="name"
             required
+            value={teamData.name}
+            onChange={handleChange}
           />
         </div>
         <div className="col-12">
@@ -95,6 +168,8 @@ const Team = () => {
             id="member"
             name="member"
             required
+            value={teamData.member}
+            onChange={handleChange}
           />
         </div>
         <div className="col-12">
@@ -106,8 +181,9 @@ const Team = () => {
             <Select
               labelId="demo-multiple-name-label"
               id="demo-multiple-name"
+              name="membersList"
               multiple
-              value={personName}
+              value={teamData.membersList}
               onChange={handleChange}
               input={<OutlinedInput label="Members Name" />}
               MenuProps={MenuProps}
@@ -116,7 +192,7 @@ const Team = () => {
                 <MenuItem
                   key={name}
                   value={name}
-                  style={getStyles(name, personName, theme)}
+                  style={getStyles(name, teamData.membersList, theme)}
                 >
                   {name}
                 </MenuItem>
@@ -141,6 +217,8 @@ const Team = () => {
             id="name"
             name="name"
             required
+            value={editTeamData.name}
+            onChange={handleEditChange}
           />
         </div>
         <div className="col-12">
@@ -153,6 +231,8 @@ const Team = () => {
             id="member"
             name="member"
             required
+            value={editTeamData.member}
+            onChange={handleEditChange}
           />
         </div>
         <div className="col-12">
@@ -164,9 +244,10 @@ const Team = () => {
             <Select
               labelId="demo-multiple-name-label"
               id="demo-multiple-name"
+              name="membersList"
               multiple
-              value={personName}
-              onChange={handleChange}
+              value={editTeamData.membersList}
+              onChange={handleEditChange}
               input={<OutlinedInput label="Members Name" />}
               MenuProps={MenuProps}
             >
@@ -174,7 +255,7 @@ const Team = () => {
                 <MenuItem
                   key={name}
                   value={name}
-                  style={getStyles(name, personName, theme)}
+                  style={getStyles(name, editTeamData.membersList, theme)}
                 >
                   {name}
                 </MenuItem>
@@ -186,19 +267,117 @@ const Team = () => {
     );
   };
 
-  const createTeam = () => {
-    console.log("create");
-    setLoading(true);
+  const createTeam = async (e) => {
+    e.preventDefault();
+    if (!teamData.name || !teamData.member || !teamData.membersList) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-team`;
+      // const data = { name: name };
+      const response = await adminService.postData(endpoint, teamData);
+      if (response.status === 200) {
+        getAllTeams();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setTeamData({
+          name: "",
+          member: "",
+          membersList: [],
+        });
+        //close the modal
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton) {
+          addModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const editTeam = () => {
-    console.log("edit");
-    setLoading(true);
+  const editTeam = async (e) => {
+    e.preventDefault();
+    if (
+      !editTeamData.name ||
+      !editTeamData.member ||
+      !editTeamData.membersList
+    ) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-team/${editTeamData._id}`;
+      // const data = { name: editDomainName };
+      const response = await adminService.putData(endpoint, editTeamData);
+      if (response.status === 200) {
+        getAllTeams();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setEditTeamData({
+          name: "",
+          member: "",
+          membersList: [],
+        });
+        //close the modal
+        const editModalCloseButton = document.getElementById(
+          "editModalCloseButton"
+        );
+        if (editModalCloseButton) {
+          editModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRowDataOnEditClick = (data) => {
     setEditTeamData(data);
   };
+
+  useEffect(() => {
+    getAllTeams();
+  }, [currentPage || teams]);
 
   return (
     <>

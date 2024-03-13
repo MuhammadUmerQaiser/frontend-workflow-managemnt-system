@@ -8,8 +8,8 @@ import EditModal from "../../../../components/common/modal/EditModal";
 import { AdminService } from "../../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
 const Domain = () => {
-  const fields = ["_id", "name", "action"];
-  const [domains, setDomains] = useState([{ _id: "1", name: "Domain 1" }]);
+  const fields = ["_id", "name", "active", "action"];
+  const [domains, setDomains] = useState([]);
   const [editDomainData, setEditDomainData] = useState({
     name:"",
     isActive:false
@@ -166,7 +166,6 @@ const Domain = () => {
         autoHideDuration: 2000,
       });
       setLoading(false);
-      setLoading(true);
       return;
     }
     try {

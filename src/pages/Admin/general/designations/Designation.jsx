@@ -9,7 +9,7 @@ import { AdminService } from "../../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
 
 const Designation = () => {
-  const fields = ["_id", "name", "action"];
+  const fields = ["_id", "name", "active", "action"];
   const [designations, setDesignations] = useState([
     { _id: "1", name: "Designation 1" },
   ]);

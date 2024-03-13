@@ -4,22 +4,67 @@ import UserLayout from "../../../../components/User/UserLayout";
 import Table from "../../../../components/common/table/Table";
 import AddModal from "../../../../components/common/modal/AddModal";
 import EditModal from "../../../../components/common/modal/EditModal";
+import { AdminService } from "../../../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 
 const Task = () => {
   const fields = ["_id", "name", "action"];
-  const [tasks, setTasks] = useState([{ _id: "1", name: "Task 1" }]);
+  const [tasks, setTasks] = useState([]);
   const [editTaskData, setEditTaskData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [editTaskName, setEditTaskName] = useState("");
+  const [name, setName] = useState("");
+  const adminService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const handleChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const getAllTasks = async () => {
+    try {
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-tasks?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setTasks(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   const deleteTask = async (id) => {
-    console.log("delete");
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-task/${id}`;
+      const response = await adminService.deleteData(endpoint, id);
+      if (response.status === 200) {
+        getAllTasks();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   const addModalForm = () => {
@@ -29,7 +74,13 @@ const Task = () => {
           <label htmlFor="name" className="form-label">
             Task
           </label>
-          <textarea className="form-control" id="name" name="name"></textarea>
+          <textarea
+            className="form-control"
+            id="name"
+            name="name"
+            value={name}
+            onChange={handleChange}
+          ></textarea>
         </div>
       </form>
     );
@@ -42,24 +93,113 @@ const Task = () => {
           <label htmlFor="name" className="form-label">
             Task
           </label>
-          <textarea className="form-control" id="name" name="name"></textarea>
+          <textarea
+            className="form-control"
+            id="name"
+            name="name"
+            value={editTaskName}
+            onChange={(e) => setEditTaskName(e.target.value)}
+          ></textarea>
         </div>
       </form>
     );
   };
 
-  const createTask = () => {
-    console.log("create");
-    setLoading(true);
+  const createTask = async (e) => {
+    e.preventDefault();
+    if (!name) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-task`;
+      const data = { name: name };
+      const response = await adminService.postData(endpoint, data);
+      if (response.status === 200) {
+        getAllTasks();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setName("");
+        //close the modal
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton) {
+          addModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const editTask = () => {
-    console.log("edit");
-    setLoading(true);
+  const editTask = async (e) => {
+    e.preventDefault();
+    if (!editTaskName) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-task/${editTaskData._id}`;
+      const data = { name: editTaskName };
+      const response = await adminService.putData(endpoint, data);
+      if (response.status === 200) {
+        getAllTasks();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setName("");
+        //close the modal
+        const editModalCloseButton = document.getElementById(
+          "editModalCloseButton"
+        );
+        if (editModalCloseButton) {
+          editModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRowDataOnEditClick = (data) => {
     setEditTaskData(data);
+    setEditTaskName(data.name);
   };
 
   return (

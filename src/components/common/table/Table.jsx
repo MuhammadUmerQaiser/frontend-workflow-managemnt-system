@@ -9,11 +9,12 @@ const Table = ({
   itemsPerPage,
   totalPages,
   handlePageChange,
-  deleteData,
+  deleteData = null,
   detailLink = "/",
   editLink,
   showViewButton = true,
   editModalButton = false,
+  deleteModalButton = true,
   editModalButtonId = "",
   handleRowDataOnEditClick = null,
 }) => {
@@ -51,12 +52,14 @@ const Table = ({
                 return null;
               })}
               <td>
-                <button
-                  className="btn btn-sm btn-danger"
-                  onClick={() => deleteData(rowData["_id"])}
-                >
-                  <i className="bi bi-trash-fill"></i>
-                </button>
+                {deleteModalButton && (
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => deleteData(rowData["_id"])}
+                  >
+                    <i className="bi bi-trash-fill"></i>
+                  </button>
+                )}
                 {editModalButton && (
                   <button
                     className="btn btn-sm btn-primary"

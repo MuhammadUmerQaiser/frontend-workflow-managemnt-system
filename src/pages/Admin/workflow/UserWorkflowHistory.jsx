@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import UserLayout from "../../../components/User/UserLayout";
 import { Link } from "react-router-dom";
-import CreateWorkflowForm from "../../../components/User/workflow/CreateWorkflowForm";
 import { useSnackbar } from "notistack";
 import { AdminService } from "../../../services/admin/admin.service";
 import Table from "../../../components/common/table/Table";
@@ -17,7 +16,7 @@ const UserWorkflowHistory = () => {
 
   const getAllUserWorkflowHistory = async () => {
     try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-user-workflow-history?page=${currentPage}`;
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-user-workflow-history?page=${currentPage}`;
       const response = await userService.getData(endpoint);
       if (response.status === 200) {
         console.log(response);

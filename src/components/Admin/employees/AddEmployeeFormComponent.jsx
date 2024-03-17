@@ -1,12 +1,19 @@
 // AddEmployeeForm.js
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { generateRandomPassword } from "../../../helpers/helpers";
 import AuthButton from "../../common/Button/AuthButton";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { EmployeeService } from "../../../services/admin/employees.service";
-import { roles } from "../../../helpers/helpers";
+import {
+  getAllDesignation,
+  getAllDomains,
+  getAllGrades,
+  getAllRoles,
+  getAllTasks,
+  getAllTeams,
+} from "../../../services/global";
 
 const AddEmployeeForm = () => {
   const [employeeData, setEmployeeData] = useState({
@@ -21,6 +28,12 @@ const AddEmployeeForm = () => {
     grade: "",
     tasks: [],
   });
+  const [roles, setRoles] = useState([]);
+  const [domains, setDomains] = useState([]);
+  const [designations, setDesignations] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -116,6 +129,19 @@ const AddEmployeeForm = () => {
     });
   };
 
+  const init = async () => {
+    setRoles(await getAllRoles());
+    setDomains(await getAllDomains());
+    setDesignations(await getAllDesignation());
+    setGrades(await getAllGrades());
+    setTasks(await getAllTasks());
+    setTeams(await getAllTeams());
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
   return (
     <div className="container mt-4">
       <div className="card">
@@ -186,8 +212,8 @@ const AddEmployeeForm = () => {
                 <option value="">Select Role</option>
                 {roles.map((role, index) => {
                   return (
-                    <option key={index} value={role}>
-                      {role}
+                    <option key={index} value={role.name}>
+                      {role.name}
                     </option>
                   );
                 })}
@@ -204,8 +230,13 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Domain</option>
-                <option value="domain1">Domain 1</option>
-                <option value="domain2">Domain 2</option>
+                {domains.map((domain, index) => {
+                  return (
+                    <option key={index} value={domain.name}>
+                      {domain.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="col-6">
@@ -219,8 +250,13 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Designation</option>
-                <option value="designation1">Designation 1</option>
-                <option value="designation2">Designation 2</option>
+                {designations.map((designation, index) => {
+                  return (
+                    <option key={index} value={designation.name}>
+                      {designation.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="col-12">
@@ -262,8 +298,13 @@ const AddEmployeeForm = () => {
                   onChange={handleChange}
                 >
                   <option value="">Select Team</option>
-                  <option value="team1">Team 1</option>
-                  <option value="team2">Team 2</option>
+                  {teams.map((team, index) => {
+                    return (
+                      <option key={index} value={team.name}>
+                        {team.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             )}
@@ -278,36 +319,34 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Grade</option>
-                <option value="grade1">Grade 1</option>
-                <option value="grade2">Grade 2</option>
+                {grades.map((grade, index) => {
+                  return (
+                    <option key={index} value={grade.name}>
+                      {grade.name}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="col-12">
               <label htmlFor="designation" className="form-label">
                 Tasks
               </label>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="tasks"
-                  value="Task 1"
-                  onChange={handleChange}
-                  checked={employeeData.tasks.includes("Task 1")}
-                />
-                <label className="form-check-label">Task 1</label>
-              </div>
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="tasks"
-                  value="Task 2"
-                  onChange={handleChange}
-                  checked={employeeData.tasks.includes("Task 2")}
-                />
-                <label className="form-check-label">Task 2</label>
-              </div>
+              {tasks.map((task, index) => {
+                return (
+                  <div className="form-check" key={index}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      name="tasks"
+                      value={task.name}
+                      onChange={handleChange}
+                      checked={employeeData.tasks.includes(task.name)}
+                    />
+                    <label className="form-check-label">{task.name}</label>
+                  </div>
+                );
+              })}
             </div>
             <div>
               <AuthButton

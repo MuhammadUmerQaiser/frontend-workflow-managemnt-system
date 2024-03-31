@@ -82,6 +82,28 @@ const DashboardSidebar = () => {
                   <span>Employees</span>
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to="/admin/history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>History</span>
+                </Link>
+              </li>
+            </>
+          )}
+          {user.role != "Admin" && (
+            <>
+              <li className="nav-item">
+                <Link to="/user/workflow" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Workflow</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/user/history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>History</span>
+                </Link>
+              </li>
             </>
           )}
         </ul>

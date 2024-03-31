@@ -4,7 +4,7 @@ import { isAuthenticated } from "../../helpers/helpers";
 
 const UserProtectedRoutes = () => {
   const user = isAuthenticated();
-  return user && user.role === "Employee" ? (
+  return user && user.role !== "Admin" ? (
     <Outlet />
   ) : (
     <Navigate to="/login" />

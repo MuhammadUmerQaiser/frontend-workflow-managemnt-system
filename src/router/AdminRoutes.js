@@ -12,6 +12,7 @@ import AddEmployeeForm from "../pages/Admin/employees/AddEmployeeForm";
 import EmployeeDetail from "../pages/Admin/employees/EmployeeDetail";
 import EmployeeEdit from "../pages/Admin/employees/EmployeeEdit";
 import AdminProtectedRoute from "./RouteProtection/AdminProtectedRoutes";
+import UserWorkflowHistory from "../pages/Admin/workflow/UserWorkflowHistory";
 
 function AdminRoutes() {
   return (
@@ -121,6 +122,17 @@ function AdminRoutes() {
               path="/admin/roles"
               exact
               Component={Role}
+            />
+          </Route>
+          <Route
+            path="/admin/history"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/history"
+              exact
+              Component={UserWorkflowHistory}
             />
           </Route>
         </Routes>

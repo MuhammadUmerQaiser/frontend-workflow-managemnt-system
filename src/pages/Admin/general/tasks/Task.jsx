@@ -202,6 +202,10 @@ const Task = () => {
     setEditTaskName(data.name);
   };
 
+  useEffect(() => {
+    getAllTasks();
+  }, [currentPage || tasks]);
+
   return (
     <>
       <UserLayout>

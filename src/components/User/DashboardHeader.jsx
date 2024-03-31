@@ -1,14 +1,22 @@
 import { useState } from "react";
 import srb from "../../assets/srb.png";
 import profile_image from "../../assets/img/profile-img.jpg";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHeader = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
     document.body.classList.toggle("toggle-sidebar", !sidebarVisible);
   };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('auth');
+    navigate('/login')
+  }
   return (
     <>
       <header id="header" className="header fixed-top d-flex align-items-center">
@@ -101,7 +109,7 @@ const DashboardHeader = () => {
                 </li>
 
                 <li>
-                  <a className="dropdown-item d-flex align-items-center" href="#">
+                  <a className="dropdown-item d-flex align-items-center" href="#" onClick={() => logout()}>
                     <i className="bi bi-box-arrow-right"></i>
                     <span>Sign Out</span>
                   </a>

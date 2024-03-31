@@ -8,7 +8,7 @@ const UnAuthenticatedRoutes = () => {
     user.role === "Admin" ? (
       <Navigate to="/admin" />
     ) : (
-      <Navigate to="/admin" />
+      <Navigate to="/user" />
     )
   ) : (
     <Outlet />

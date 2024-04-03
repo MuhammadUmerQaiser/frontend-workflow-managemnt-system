@@ -83,6 +83,30 @@ const DashboardSidebar = () => {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/admin/categories" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Categories</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/sub-categories" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Sub Categories</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/tax-payer" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Tax Payer</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/desk" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Desks</span>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/admin/history" className="nav-link">
                   <i className="bi bi-people"></i>
                   <span>History</span>

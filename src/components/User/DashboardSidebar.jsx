@@ -56,7 +56,7 @@ const DashboardSidebar = () => {
                       <span>Designations</span>
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/admin/teams">
                       <i className="bi bi-circle"></i>
                       <span>Teams</span>
@@ -73,7 +73,7 @@ const DashboardSidebar = () => {
                       <i className="bi bi-circle"></i>
                       <span>Grades</span>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </li>
               <li className="nav-item">

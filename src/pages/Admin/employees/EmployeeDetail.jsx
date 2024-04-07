@@ -103,52 +103,6 @@ const EmployeeDetail = () => {
                                 {employee.designation}
                               </div>
                             </div>
-
-                            <div className="row mt-3">
-                              <div className="col-lg-3 col-md-4 label">
-                                <b>Member</b>
-                              </div>
-                              <div className="col-lg-9 col-md-8">
-                                {employee.member}
-                              </div>
-                            </div>
-
-                            {employee.member == "group" && (
-                              <div className="row mt-3">
-                                <div className="col-lg-3 col-md-4 label">
-                                  <b>Team</b>
-                                </div>
-                                <div className="col-lg-9 col-md-8">
-                                  {employee.team}
-                                </div>
-                              </div>
-                            )}
-
-                            <div className="row mt-3">
-                              <div className="col-lg-3 col-md-4 label">
-                                <b>Grade</b>
-                              </div>
-                              <div className="col-lg-9 col-md-8">
-                                {employee.grade}
-                              </div>
-                            </div>
-
-                            <div className="row mt-3">
-                              <div className="col-lg-3 col-md-4 label">
-                                <b>Tasks</b>
-                              </div>
-                              <div className="col-lg-9 col-md-8">
-                                {employee.tasks ? (
-                                  <ol>
-                                    {employee.tasks.map((task, index) => (
-                                      <li key={index}>{task}</li>
-                                    ))}
-                                  </ol>
-                                ) : (
-                                  <p>No tasks available</p>
-                                )}
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>

@@ -97,3 +97,27 @@ export const getAllTeams = async () => {
     console.log(error);
   }
 };
+
+export const getCategories = async (pagination = false) => {
+  try {
+    const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-categories?paginatedData=${pagination}`;
+    const response = await getData(endpoint);
+    if (response.status === 200) {
+      return response?.data?.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getSubCategories = async (category = null, pagination = false) => {
+  try {
+    const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-sub-categories?paginatedData=${pagination}&category=${category}`;
+    const response = await getData(endpoint);
+    if (response.status === 200) {
+      return response?.data?.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};

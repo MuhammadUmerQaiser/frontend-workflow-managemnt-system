@@ -7,25 +7,30 @@ import AddModal from "../../../components/common/modal/AddModal";
 import EditModal from "../../../components/common/modal/EditModal";
 import { AdminService } from "../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
+import {
+  getCategories,
+  getTaxPayersBasedOnMultipleCategoriesAndSubCategories,
+  getAllSubCategoriesBasedOnMultipleCategoires,
+} from "../../../services/global";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import ListModal from "../../../components/common/modal/ListModal";
 
 const Desk = () => {
-  const fields = ["_id", "name", "group", "groupname", "taxpayer", "action"];
-  const [desks, setDesks] = useState([
-    {
-      _id: "65ce271d1b7023e463c48d2e",
-      name: "IT",
-      group: "Category",
-      groupname: "Restaurant",
-      taxpayer: "100",
-    },
-  ]);
-  const [editDeskData, setEditDeskData] = useState({});
+  const fields = ["_id", "name", "action"];
+  const [desks, setDesks] = useState([]);
+  const [deskData, setDeskData] = useState({
+    name: "",
+    employee: [],
+    working_group: [],
+    job_description: "",
+  });
+  const [employees, setEmployees] = useState([]);
+  const [workingGroups, setWorkingGroups] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [editDeskName, setEditDeskName] = useState("");
   const adminService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -33,13 +38,91 @@ const Desk = () => {
     setCurrentPage(page);
   };
 
-  const handleChange = (e) => {
-    setName(e.target.value);
+  const handleMuiSelectChange = async (name, value) => {
+    if (name === "employee") {
+      const employeeIds = value.map((item) => item._id);
+      const updatedEmployees = deskData.employee.filter((employeeId) =>
+        employeeIds.includes(employeeId)
+      );
+      const newEmployees = value
+        .filter((item) => !deskData.employee.includes(item._id))
+        .map((item) => item._id);
+      setDeskData((prev) => ({
+        ...prev,
+        employee: [...updatedEmployees, ...newEmployees],
+      }));
+    } else if (name === "working_group") {
+      const workingGroupIds = value.map((item) => item._id);
+      const updatedGroups = deskData.working_group.filter((workingGroupId) =>
+        workingGroupIds.includes(workingGroupId)
+      );
+      const newGroups = value
+        .filter((item) => !deskData.working_group.includes(item._id))
+        .map((item) => item._id);
+      setDeskData((prev) => ({
+        ...prev,
+        working_group: [...updatedGroups, ...newGroups],
+      }));
+    }
   };
 
-  const getAllDesks = async () => {};
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDeskData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  const deleteDesk = async (id) => {};
+  const getAllDesks = async () => {
+    try {
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-desks?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setDesks(response?.data?.data);
+        setCurrentPage(response?.data?.currentPage);
+        setPageSize(response?.data?.pageSize);
+        setTotalPages(response?.data?.totalPages);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const getAllWorkingGroups = async () => {
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-unassoicated-working-groups`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setWorkingGroups(response?.data?.data);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const getAllEmployees = async () => {
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-unassoicated-employees`;
+      const response = await adminService.getData(endpoint);
+      if (response.status === 200) {
+        setEmployees(response?.data?.data);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
 
   const addModalForm = () => {
     return (
@@ -52,155 +135,142 @@ const Desk = () => {
             type="text"
             className="form-control"
             name="name"
-            value={name}
+            value={deskData.name}
             onChange={handleChange}
             required
           />
         </div>
         <div className="col-12">
-          <label className="form-label">Group By</label>
-          <div className="form-check d-flex" style={{ gap: "40px" }}>
-            <div>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="member"
-                value="individual"
-              />
-              <label className="form-check-label">Category</label>
-            </div>
-            <div>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="member"
-                value="group"
-              />
-              <label className="form-check-label">Sub Category</label>
-            </div>
-            <div>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="member"
-                value="group"
-              />
-              <label className="form-check-label">Group</label>
-            </div>
-          </div>
-        </div>
-        <div className="col-12">
           <label htmlFor="domain" className="form-label">
-            Categories
+            Employees
           </label>
-          <select className="form-select" name="category">
-            <option value="">Select Category</option>
-            <option value="Restaurant">Restaurant</option>
-          </select>
-        </div>
-        <div className="col-12">
-          <label htmlFor="domain" className="form-label">
-            Tax Payer
-          </label>
-          <input type="number" className="form-control" name="name" required />
-        </div>
-      </form>
-    );
-  };
-
-  const editModalForm = () => {
-    return (
-      <form className="row g-3" method="POST">
-        <div className="col-12">
-          <label htmlFor="name" className="form-label">
-            Name
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
-            name="name"
-            value={editDeskName}
-            onChange={(e) => setEditDeskName(e.target.value)}
+          <Autocomplete
+            multiple
+            id="tags-standard"
+            options={employees}
+            getOptionLabel={(option) => option.name}
+            name="employee"
+            onChange={(event, value) =>
+              handleMuiSelectChange("employee", value)
+            }
+            style={{ width: 465 }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Select Employee"
+                variant="outlined"
+              />
+            )}
           />
         </div>
         <div className="col-12">
-          <label className="form-label">Group By</label>
-          <div className="form-check d-flex" style={{ gap: "40px" }}>
-            <div>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="member"
-                value="individual"
-              />
-              <label className="form-check-label">Category</label>
-            </div>
-            <div>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="member"
-                value="group"
-              />
-              <label className="form-check-label">Sub Category</label>
-            </div>
-            <div>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="member"
-                value="group"
-              />
-              <label className="form-check-label">Group</label>
-            </div>
-          </div>
+          <label htmlFor="domain" className="form-label">
+            Groups
+          </label>
+          <Autocomplete
+            multiple
+            id="tags-standard"
+            options={workingGroups}
+            getOptionLabel={(option) => option.name}
+            style={{ width: 465 }}
+            name="working_group"
+            onChange={(event, value) =>
+              handleMuiSelectChange("working_group", value)
+            }
+            renderInput={(params) => (
+              <TextField {...params} label="Select Group" variant="outlined" />
+            )}
+          />
         </div>
         <div className="col-12">
-          <label htmlFor="domain" className="form-label">
-            Categories
+          <label htmlFor="name" className="form-label">
+            Job Description
           </label>
-          <select className="form-select" name="category">
-            <option value="">Select Category</option>
-            <option value="Restaurant">Restaurant</option>
-          </select>
-        </div>
-        <div className="col-12">
-          <label htmlFor="domain" className="form-label">
-            Tax Payer
-          </label>
-          <input type="number" className="form-control" name="name" required />
+          <textarea
+            className="form-control"
+            name="job_description"
+            value={deskData.job_description}
+            onChange={handleChange}
+            required
+            style={{ resize: "none" }}
+          ></textarea>
         </div>
       </form>
     );
   };
 
-  const createDesk = async (e) => {};
+  const createDesk = async (e) => {
+    e.preventDefault();
+    const { name, employee, working_group, job_description } = deskData;
 
-  const editDesk = async (e) => {};
+    if (!name || !employee || !working_group || !job_description) {
+      enqueueSnackbar("Please fill in all the fields", {
+        variant: "error",
+      });
+      setLoading(false);
+      return;
+    }
 
-  const handleRowDataOnEditClick = (data) => {
-    setEditDeskData(data);
-    setEditDeskName(data.name);
+    try {
+      setLoading(true);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-desk`;
+      const response = await adminService.postData(endpoint, deskData);
+
+      if (response.status === 200) {
+        getAllDesks();
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        setDeskData({
+          name: "",
+          working_group: [],
+          job_description: "",
+          employee: [],
+        });
+        //close the modal
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton) {
+          addModalCloseButton.click();
+        }
+      }
+      if (response?.response?.status === 500) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getAllDesks();
-  }, [currentPage || desks]);
+    getAllWorkingGroups();
+    getAllEmployees();
+  }, [currentPage || workingGroups]);
 
   return (
     <>
       <UserLayout>
         <main id="main" className="main">
           <div className="pagetitle">
-            <h1>Desk</h1>
+            <h1>Working Groups</h1>
             <nav>
               <ol className="breadcrumb">
                 <li className="breadcrumb-item">
                   <Link to="/">Home</Link>
                 </li>
                 <li className="breadcrumb-item">
-                  <Link to="/admin/tax-payer">Desks</Link>
+                  <Link to="/admin/desk">Desks</Link>
                 </li>
                 <li className="breadcrumb-item active">Lists</li>
               </ol>
@@ -217,8 +287,9 @@ const Desk = () => {
                           <h5 className="card-title">Desks</h5>
                           <button
                             className="btn btn-primary btn-sm mt-3"
+                            id="addModalButton"
                             data-bs-toggle="modal"
-                            data-bs-target="#deskAddModalForm"
+                            data-bs-target="#taxPayerAddModalForm"
                           >
                             Add New Desk
                           </button>
@@ -231,12 +302,12 @@ const Desk = () => {
                             itemsPerPage={pageSize}
                             totalPages={totalPages}
                             handlePageChange={handlePageChange}
-                            deleteData={deleteDesk}
+                            deleteModalButton={false}
                             editLink={"/admin/employee/edit"}
-                            showViewButton={false}
-                            editModalButton={true}
-                            editModalButtonId={"deskEditModalForm"}
-                            handleRowDataOnEditClick={handleRowDataOnEditClick}
+                            detailLink={"/admin/desk"}
+                            showViewButton={true}
+                            editModalButton={false}
+                            editButtonLink={false}
                           />
                         </div>
                       </div>
@@ -247,19 +318,12 @@ const Desk = () => {
             </div>
           </section>
           <AddModal
-            modalId={"deskAddModalForm"}
+            modalId={"taxPayerAddModalForm"}
             createItem={createDesk}
             loading={loading}
           >
             {addModalForm()}
           </AddModal>
-          <EditModal
-            editModalId={"deskEditModalForm"}
-            editItem={editDesk}
-            loading={loading}
-          >
-            {editModalForm()}
-          </EditModal>
         </main>
       </UserLayout>
     </>

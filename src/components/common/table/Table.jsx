@@ -17,6 +17,7 @@ const Table = ({
   deleteModalButton = true,
   editModalButtonId = "",
   handleRowDataOnEditClick = null,
+  editButtonLink = true
 }) => {
   return (
     <div className="table-responsive">
@@ -88,7 +89,7 @@ const Table = ({
                   </button>
                 )}
 
-                {!editModalButton && (
+                {!editModalButton && editButtonLink && (
                   <Link
                     to={`${editLink}/${rowData["_id"]}`}
                     className="btn btn-sm btn-primary"

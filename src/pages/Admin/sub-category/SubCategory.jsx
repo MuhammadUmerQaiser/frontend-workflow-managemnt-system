@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import UserLayout from "../../components/User/UserLayout";
-import Table from "../../components/common/table/Table";
-import AddModal from "../../components/common/modal/AddModal";
-import EditModal from "../../components/common/modal/EditModal";
-import { AdminService } from "../../services/admin/admin.service";
+import UserLayout from "../../../components/User/UserLayout";
+import Table from "../../../components/common/table/Table";
+import AddModal from "../../../components/common/modal/AddModal";
+import EditModal from "../../../components/common/modal/EditModal";
+import { AdminService } from "../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
-import { getCategories } from "../../services/global";
+import { getCategories } from "../../../services/global";
 
 const SubCategory = () => {
   const fields = ["_id", "name", "category-name", "action"];
@@ -124,7 +124,7 @@ const SubCategory = () => {
             onChange={handleChange}
           >
             <option value="">Select Category</option>
-            {categories.map((category, index) => {
+            {categories?.map((category, index) => {
               return (
                 <option value={category._id} key={index}>
                   {category.name}
@@ -164,7 +164,7 @@ const SubCategory = () => {
             onChange={handleEditChange}
           >
             <option value="">Select Category</option>
-            {categories.map((category, index) => {
+            {categories?.map((category, index) => {
               return (
                 <option value={category._id} key={index}>
                   {category.name}

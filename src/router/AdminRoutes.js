@@ -13,10 +13,11 @@ import EmployeeDetail from "../pages/Admin/employees/EmployeeDetail";
 import EmployeeEdit from "../pages/Admin/employees/EmployeeEdit";
 import AdminProtectedRoute from "./RouteProtection/AdminProtectedRoutes";
 import UserWorkflowHistory from "../pages/Admin/workflow/UserWorkflowHistory";
-import Category from "../pages/Admin/Category";
-import SubCategory from "../pages/Admin/SubCategory";
-import TaxPayer from "../pages/Admin/TaxPayer";
-import Desk from "../pages/Admin/Desk";
+import Category from "../pages/Admin/category/Category";
+import SubCategory from "../pages/Admin/sub-category/SubCategory";
+import TaxPayer from "../pages/Admin/tax-payer/TaxPayer";
+import Desk from "../pages/Admin/desk/Desk";
+import WorkingGroup from "../pages/Admin/working-group/WorkingGroup";
 
 function AdminRoutes() {
   return (
@@ -181,6 +182,17 @@ function AdminRoutes() {
               path="/admin/desk"
               exact
               Component={Desk}
+            />
+          </Route>
+          <Route
+            path="/admin/groups"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/groups"
+              exact
+              Component={WorkingGroup}
             />
           </Route>
         </Routes>

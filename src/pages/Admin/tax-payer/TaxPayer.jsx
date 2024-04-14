@@ -1,23 +1,42 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import UserLayout from "../../components/User/UserLayout";
-import Table from "../../components/common/table/Table";
-import AddModal from "../../components/common/modal/AddModal";
-import EditModal from "../../components/common/modal/EditModal";
-import { AdminService } from "../../services/admin/admin.service";
+import UserLayout from "../../../components/User/UserLayout";
+import Table from "../../../components/common/table/Table";
+import AddModal from "../../../components/common/modal/AddModal";
+import EditModal from "../../../components/common/modal/EditModal";
+import { AdminService } from "../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
+import { getCategories, getSubCategories } from "../../../services/global";
 
-const Category = () => {
-  const fields = ["_id", "name", "action"];
+const TaxPayer = () => {
+  const fields = [
+    "_id",
+    "name",
+    "category-name",
+    "sub_category-name",
+    "action",
+  ];
+  const [taxPayers, setTaxPayers] = useState([]);
+  const [taxPayerData, setTaxPayerData] = useState({
+    name: "",
+    category: "",
+    sub_category: "",
+  });
   const [categories, setCategories] = useState([]);
-  const [editCategoryData, setEditCategoryData] = useState({});
+  const [subCategories, setSubCategories] = useState([]);
+  const [editTaxPayerData, setEditTaxPayerData] = useState({});
+  const [editTaxPayerFormData, setEditTaxPayerFormData] = useState({
+    name: "",
+    category: "",
+    sub_category: "",
+  });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [editCategoryName, setEditCategoryName] = useState("");
+  const [editTaxPayerName, setEditTaxPayerName] = useState("");
   const adminService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -26,17 +45,35 @@ const Category = () => {
   };
 
   const handleChange = (e) => {
-    setName(e.target.value);
+    const { name, value } = e.target;
+    if (name == "category") {
+      getAllSubCategories(value);
+    }
+    setTaxPayerData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const getAllCategories = async () => {
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    if (name == "category") {
+      getAllSubCategories(value);
+    }
+    setEditTaxPayerFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const getAllTaxPayers = async () => {
     try {
       const endpoint = `${
         process.env.REACT_APP_BACKEND_URL
-      }/get-all-categories?page=${currentPage}&paginatedData=${true}`;
+      }/get-all-tax-payers?page=${currentPage}&paginatedData=${true}`;
       const response = await adminService.getData(endpoint);
       if (response.status === 200) {
-        setCategories(response?.data?.data);
+        setTaxPayers(response?.data?.data);
         setCurrentPage(response?.data?.currentPage);
         setPageSize(response?.data?.pageSize);
         setTotalPages(response?.data?.totalPages);
@@ -49,12 +86,34 @@ const Category = () => {
     }
   };
 
-  const deleteCategory = async (id) => {
+  const getAllSubCategories = async (categoryId) => {
     try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-category/${id}`;
+      setSubCategories(await getSubCategories(categoryId));
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const getAllCategories = async () => {
+    try {
+      setCategories(await getCategories());
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
+  const deleteTaxPayer = async (id) => {
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/delete-tax-payer/${id}`;
       const response = await adminService.deleteData(endpoint, id);
       if (response.status === 200) {
-        getAllCategories();
+        getAllTaxPayers();
         enqueueSnackbar(response?.data?.message, {
           variant: "success",
           autoHideDuration: 2000,
@@ -79,10 +138,50 @@ const Category = () => {
             type="text"
             className="form-control"
             name="name"
-            value={name}
+            value={taxPayerData.name}
             onChange={handleChange}
             required
           />
+        </div>
+        <div className="col-12">
+          <label htmlFor="domain" className="form-label">
+            Categories
+          </label>
+          <select
+            className="form-select"
+            name="category"
+            value={taxPayerData.category}
+            onChange={handleChange}
+          >
+            <option value="">Select Category</option>
+            {categories?.map((category, index) => {
+              return (
+                <option value={category._id} key={index}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="col-12">
+          <label htmlFor="domain" className="form-label">
+            Sub Categories
+          </label>
+          <select
+            className="form-select"
+            name="sub_category"
+            value={taxPayerData.sub_category}
+            onChange={handleChange}
+          >
+            <option value="">Select Sub Category</option>
+            {subCategories?.map((subCategory, index) => {
+              return (
+                <option value={subCategory._id} key={index}>
+                  {subCategory.name}
+                </option>
+              );
+            })}
+          </select>
         </div>
       </form>
     );
@@ -100,36 +199,78 @@ const Category = () => {
             className="form-control"
             id="name"
             name="name"
-            value={editCategoryName}
-            onChange={(e) => setEditCategoryName(e.target.value)}
+            value={editTaxPayerFormData.name}
+            onChange={handleEditChange}
           />
+        </div>
+        <div className="col-12">
+          <label htmlFor="domain" className="form-label">
+            Categories
+          </label>
+          <select
+            className="form-select"
+            name="category"
+            value={editTaxPayerFormData.category}
+            onChange={handleEditChange}
+          >
+            <option value="">Select Category</option>
+            {categories?.map((category, index) => {
+              return (
+                <option value={category._id} key={index}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="col-12">
+          <label htmlFor="domain" className="form-label">
+            Sub Categories
+          </label>
+          <select
+            className="form-select"
+            name="sub_category"
+            value={editTaxPayerFormData.sub_category}
+            onChange={handleEditChange}
+          >
+            <option value="">Select Sub Category</option>
+            {subCategories?.map((subCategory, index) => {
+              return (
+                <option value={subCategory._id} key={index}>
+                  {subCategory.name}
+                </option>
+              );
+            })}
+          </select>
         </div>
       </form>
     );
   };
 
-  const createCategory = async (e) => {
+  const createTaxPayer = async (e) => {
     e.preventDefault();
-    if (!name) {
+    const { name, category, sub_category } = taxPayerData;
+
+    if (!name || !category || !sub_category) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
-        autoHideDuration: 2000,
       });
       setLoading(false);
       return;
     }
+
     try {
       setLoading(true);
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-category`;
-      const data = { name: name };
-      const response = await adminService.postData(endpoint, data);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-tax-payer`;
+      const response = await adminService.postData(endpoint, taxPayerData);
+
       if (response.status === 200) {
-        getAllCategories();
+        getAllTaxPayers();
         enqueueSnackbar(response?.data?.message, {
           variant: "success",
           autoHideDuration: 2000,
         });
-        setName("");
+        setTaxPayerData({ name: "", category: "", sub_category: "" });
         //close the modal
         const addModalCloseButton = document.getElementById(
           "addModalCloseButton"
@@ -154,28 +295,30 @@ const Category = () => {
     }
   };
 
-  const editCategory = async (e) => {
+  const editTaxPayer = async (e) => {
     e.preventDefault();
-    if (!editCategoryName) {
+    const { name, category, sub_category } = editTaxPayerFormData;
+
+    if (!name || !category || !sub_category) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
-        autoHideDuration: 2000,
       });
       setLoading(false);
       return;
     }
     try {
       setLoading(true);
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-category/${editCategoryData._id}`;
-      const data = { name: editCategoryName };
-      const response = await adminService.putData(endpoint, data);
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-tax-payer/${editTaxPayerData._id}`;
+      const response = await adminService.putData(
+        endpoint,
+        editTaxPayerFormData
+      );
       if (response.status === 200) {
-        getAllCategories();
+        getAllTaxPayers();
         enqueueSnackbar(response?.data?.message, {
           variant: "success",
           autoHideDuration: 2000,
         });
-        setName("");
         //close the modal
         const editModalCloseButton = document.getElementById(
           "editModalCloseButton"
@@ -201,27 +344,33 @@ const Category = () => {
   };
 
   const handleRowDataOnEditClick = (data) => {
-    setEditCategoryData(data);
-    setEditCategoryName(data.name);
+    setEditTaxPayerData(data);
+    setEditTaxPayerFormData({
+      name: data.name,
+      category: data.category._id,
+      sub_category: data.sub_category._id,
+    });
+    getAllSubCategories(data.category._id)
   };
 
   useEffect(() => {
+    getAllTaxPayers();
     getAllCategories();
-  }, [currentPage || categories]);
+  }, [currentPage || taxPayers]);
 
   return (
     <>
       <UserLayout>
         <main id="main" className="main">
           <div className="pagetitle">
-            <h1>Categories</h1>
+            <h1>Tax Payer</h1>
             <nav>
               <ol className="breadcrumb">
                 <li className="breadcrumb-item">
                   <Link to="/">Home</Link>
                 </li>
                 <li className="breadcrumb-item">
-                  <Link to="/admin/categories">Categories</Link>
+                  <Link to="/admin/tax-payer">Tax Payers</Link>
                 </li>
                 <li className="breadcrumb-item active">Lists</li>
               </ol>
@@ -235,28 +384,28 @@ const Category = () => {
                     <div className="card">
                       <div className="card-body">
                         <div className="d-flex align-items-start justify-content-between mb-3">
-                          <h5 className="card-title">Categories</h5>
+                          <h5 className="card-title">Tax Payers</h5>
                           <button
                             className="btn btn-primary btn-sm mt-3"
                             data-bs-toggle="modal"
-                            data-bs-target="#categoryAddModalForm"
+                            data-bs-target="#taxPayerAddModalForm"
                           >
-                            Add New Category
+                            Add New Tax Payer
                           </button>
                         </div>
                         <div className="table-reponsive">
                           <Table
                             fields={fields}
-                            data={categories}
+                            data={taxPayers}
                             currentPage={currentPage}
                             itemsPerPage={pageSize}
                             totalPages={totalPages}
                             handlePageChange={handlePageChange}
-                            deleteData={deleteCategory}
+                            deleteData={deleteTaxPayer}
                             editLink={"/admin/employee/edit"}
                             showViewButton={false}
                             editModalButton={true}
-                            editModalButtonId={"categoryEditModalForm"}
+                            editModalButtonId={"taxPayerEditModalForm"}
                             handleRowDataOnEditClick={handleRowDataOnEditClick}
                           />
                         </div>
@@ -268,15 +417,15 @@ const Category = () => {
             </div>
           </section>
           <AddModal
-            modalId={"categoryAddModalForm"}
-            createItem={createCategory}
+            modalId={"taxPayerAddModalForm"}
+            createItem={createTaxPayer}
             loading={loading}
           >
             {addModalForm()}
           </AddModal>
           <EditModal
-            editModalId={"categoryEditModalForm"}
-            editItem={editCategory}
+            editModalId={"taxPayerEditModalForm"}
+            editItem={editTaxPayer}
             loading={loading}
           >
             {editModalForm()}
@@ -287,4 +436,4 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default TaxPayer;

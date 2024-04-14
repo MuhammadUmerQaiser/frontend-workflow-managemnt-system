@@ -121,3 +121,27 @@ export const getSubCategories = async (category = null, pagination = false) => {
     console.log(error);
   }
 };
+
+export const getAllSubCategoriesBasedOnMultipleCategoires = async (categories = []) => {
+  try {
+    const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-sub-categories-by-multiple-categories?categories=${categories}`;
+    const response = await getData(endpoint);
+    if (response.status === 200) {
+      return response?.data?.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getTaxPayersBasedOnMultipleCategoriesAndSubCategories = async (categories = [], subCategories = []) => {
+  try {
+    const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-tax-payers-by-multiple-categories-&-sub-categories?categories=${categories}&subCategories=${subCategories}`;
+    const response = await getData(endpoint);
+    if (response.status === 200) {
+      return response?.data?.data;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};

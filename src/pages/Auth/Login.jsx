@@ -41,7 +41,7 @@ const Login = () => {
       if (response.status === 200) {
         const token = response.data.token;
         localStorage.setItem("token", token);
-        localStorage.setItem('auth', JSON.stringify(response?.data.result))
+        localStorage.setItem("auth", JSON.stringify(response?.data.result));
         // dispatch(setUser(response?.data.result));
         enqueueSnackbar("User logged in successfully", {
           variant: "success",
@@ -49,7 +49,7 @@ const Login = () => {
         });
         if (response.data?.result.role === "Admin") {
           navigate("/admin");
-        }else{
+        } else {
           navigate("/user");
         }
       } else {
@@ -121,7 +121,9 @@ const Login = () => {
                 onClick={handleSubmit}
               />
               <div className="noAccBox">
-                Don't have an account?
+                <p className="alreadyAccountTextStyle">
+                  Don't have an account?
+                </p>
                 <span>
                   <Link
                     to="/"

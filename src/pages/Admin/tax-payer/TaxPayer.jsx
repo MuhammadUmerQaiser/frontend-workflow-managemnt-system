@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import UserLayout from "../../../components/User/UserLayout";
 import Table from "../../../components/common/table/Table";
@@ -17,11 +17,14 @@ const TaxPayer = () => {
     "sub_category-name",
     "action",
   ];
+  const createFileInputRef = useRef(null)
   const [taxPayers, setTaxPayers] = useState([]);
   const [taxPayerData, setTaxPayerData] = useState({
     name: "",
+    ntn: "",
     category: "",
     sub_category: "",
+    image_uploaded: "",
   });
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -49,10 +52,26 @@ const TaxPayer = () => {
     if (name == "category") {
       getAllSubCategories(value);
     }
-    setTaxPayerData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name == "image_uploaded") {
+      const file = e.target.files[0];
+      const fileExtension = file.name.split(".").pop().toLowerCase();
+      if (fileExtension == "xls" || fileExtension == "xlsx") {
+        setTaxPayerData((prev) => ({
+          ...prev,
+          [name]: file,
+        }));
+      } else {
+        enqueueSnackbar("File must be excel", {
+          variant: "error",
+        });
+      }
+    } else {
+      setTaxPayerData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleEditChange = (e) => {
@@ -144,6 +163,19 @@ const TaxPayer = () => {
           />
         </div>
         <div className="col-12">
+          <label htmlFor="name" className="form-label">
+            National Tax Number (NTN)
+          </label>
+          <input
+            type="number"
+            className="form-control"
+            name="ntn"
+            value={taxPayerData.ntn}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="col-12">
           <label htmlFor="domain" className="form-label">
             Categories
           </label>
@@ -182,6 +214,19 @@ const TaxPayer = () => {
               );
             })}
           </select>
+        </div>
+        <div className="col-12">
+          <label htmlFor="domain" className="form-label">
+            Excel File
+          </label>
+          <input
+            type="file"
+            name="image_uploaded"
+            className="form-control"
+            onChange={handleChange}
+            ref={createFileInputRef}
+            required
+          />
         </div>
       </form>
     );
@@ -249,9 +294,9 @@ const TaxPayer = () => {
 
   const createTaxPayer = async (e) => {
     e.preventDefault();
-    const { name, category, sub_category } = taxPayerData;
-
-    if (!name || !category || !sub_category) {
+    const { name, category, sub_category, ntn, image_uploaded } = taxPayerData;
+    console.log(taxPayerData);
+    if (!name || !category || !sub_category || !ntn || !image_uploaded) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
       });
@@ -262,7 +307,11 @@ const TaxPayer = () => {
     try {
       setLoading(true);
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-tax-payer`;
-      const response = await adminService.postData(endpoint, taxPayerData);
+      const formData = new FormData();
+      Object.keys(taxPayerData).map((key) => {
+        formData.append(key, taxPayerData[key]);
+      });
+      const response = await adminService.postData(endpoint, formData);
 
       if (response.status === 200) {
         getAllTaxPayers();
@@ -270,7 +319,10 @@ const TaxPayer = () => {
           variant: "success",
           autoHideDuration: 2000,
         });
-        setTaxPayerData({ name: "", category: "", sub_category: "" });
+        setTaxPayerData({ name: "", category: "", sub_category: "", ntn: "", image_uploaded: "" });
+        if(createFileInputRef.current){
+          createFileInputRef.current.value = '';
+        }
         //close the modal
         const addModalCloseButton = document.getElementById(
           "addModalCloseButton"
@@ -350,7 +402,7 @@ const TaxPayer = () => {
       category: data.category._id,
       sub_category: data.sub_category._id,
     });
-    getAllSubCategories(data.category._id)
+    getAllSubCategories(data.category._id);
   };
 
   useEffect(() => {

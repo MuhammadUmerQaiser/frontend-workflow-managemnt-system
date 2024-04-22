@@ -17,6 +17,7 @@ const Table = ({
   deleteModalButton = true,
   editModalButtonId = "",
   handleRowDataOnEditClick = null,
+  editButtonLink = true
 }) => {
   return (
     <div className="table-responsive">
@@ -25,7 +26,7 @@ const Table = ({
           <tr>
             {fields.map((item, index) => (
               <th key={index} style={{ textTransform: "capitalize" }}>
-                {item == "_id" ? "Id" : item}
+                {item == "_id" ? "Id" : item.replace(/[-_]/g, " ")}
               </th>
             ))}
           </tr>
@@ -35,7 +36,23 @@ const Table = ({
             <tr key={rowIndex}>
               {fields.map((field, fieldIndex) => {
                 if (field !== "action" && field != "active") {
-                  return <td key={fieldIndex}>{rowData[field]}</td>;
+                  if (field.includes("-")) {
+                    const [fieldName, subFieldName] = field.split("-");
+                    if (
+                      fieldName &&
+                      subFieldName &&
+                      rowData[fieldName] &&
+                      rowData[fieldName][subFieldName]
+                    ) {
+                      return (
+                        <td key={fieldIndex}>
+                          {rowData[fieldName][subFieldName]}
+                        </td>
+                      );
+                    }
+                  } else {
+                    return <td key={fieldIndex}>{rowData[field]}</td>;
+                  }
                 } else if (field !== "action" && field == "active") {
                   return (
                     <td key={fieldIndex}>
@@ -72,7 +89,7 @@ const Table = ({
                   </button>
                 )}
 
-                {!editModalButton && (
+                {!editModalButton && editButtonLink && (
                   <Link
                     to={`${editLink}/${rowData["_id"]}`}
                     className="btn btn-sm btn-primary"
@@ -94,26 +111,6 @@ const Table = ({
               </td>
             </tr>
           ))}
-          {/* {data.map((data) => (
-            <tr key={data._id}>
-              <td>{data._id}</td>
-              <td>{data.name}</td>
-              <td>{data.email}</td>
-              <td>{data.domain}</td>
-              <td>{data.designation}</td>
-              <td>
-                <button className="btn btn-sm btn-danger">
-                  <i className="bi bi-trash-fill"></i>
-                </button>
-                <button
-                  className="btn btn-sm btn-primary"
-                  style={{ marginLeft: "10px" }}
-                >
-                  <i className="bi bi-journal"></i>
-                </button>
-              </td>
-            </tr>
-          ))} */}
         </tbody>
       </table>
       <div className="d-flex align-items-center justify-content-center">

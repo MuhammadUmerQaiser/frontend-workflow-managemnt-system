@@ -56,7 +56,7 @@ const DashboardSidebar = () => {
                       <span>Designations</span>
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/admin/teams">
                       <i className="bi bi-circle"></i>
                       <span>Teams</span>
@@ -73,13 +73,43 @@ const DashboardSidebar = () => {
                       <i className="bi bi-circle"></i>
                       <span>Grades</span>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </li>
               <li className="nav-item">
                 <Link to="/admin/employees" className="nav-link">
                   <i className="bi bi-people"></i>
                   <span>Employees</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/categories" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Categories</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/sub-categories" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Sub Categories</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/tax-payer" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Tax Payer</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/groups" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Groups</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/desk" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Desks</span>
                 </Link>
               </li>
               <li className="nav-item">

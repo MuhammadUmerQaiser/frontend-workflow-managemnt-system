@@ -9,10 +9,7 @@ import { EmployeeService } from "../../../services/admin/employees.service";
 import {
   getAllDesignation,
   getAllDomains,
-  getAllGrades,
   getAllRoles,
-  getAllTasks,
-  getAllTeams,
 } from "../../../services/global";
 
 const AddEmployeeForm = () => {
@@ -23,17 +20,10 @@ const AddEmployeeForm = () => {
     domain: "",
     designation: "",
     role: "",
-    member: "",
-    team: "",
-    grade: "",
-    tasks: [],
   });
   const [roles, setRoles] = useState([]);
   const [domains, setDomains] = useState([]);
   const [designations, setDesignations] = useState([]);
-  const [grades, setGrades] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -48,48 +38,18 @@ const AddEmployeeForm = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (type === "checkbox" && name === "tasks") {
-      setEmployeeData((prevData) => ({
-        ...prevData,
-        tasks: checked
-          ? [...prevData.tasks, value]
-          : prevData.tasks.filter((task) => task !== value),
-      }));
-    } else {
-      setEmployeeData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    const { name, value } = e.target;
+    setEmployeeData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const {
-      name,
-      email,
-      password,
-      domain,
-      designation,
-      member,
-      role,
-      team,
-      grade,
-      tasks,
-    } = employeeData;
+    const { name, email, password, domain, designation, role } = employeeData;
 
-    if (
-      !email ||
-      !password ||
-      !name ||
-      !domain ||
-      !designation ||
-      !member ||
-      !grade ||
-      !tasks ||
-      !role
-    ) {
+    if (!email || !password || !name || !domain || !designation || !role) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
       });
@@ -122,10 +82,6 @@ const AddEmployeeForm = () => {
       password: "",
       domain: "",
       designation: "",
-      member: "",
-      team: "",
-      grade: "",
-      tasks: [],
     });
   };
 
@@ -133,9 +89,6 @@ const AddEmployeeForm = () => {
     setRoles(await getAllRoles());
     setDomains(await getAllDomains());
     setDesignations(await getAllDesignation());
-    setGrades(await getAllGrades());
-    setTasks(await getAllTasks());
-    setTeams(await getAllTeams());
   };
 
   useEffect(() => {
@@ -258,95 +211,6 @@ const AddEmployeeForm = () => {
                   );
                 })}
               </select>
-            </div>
-            <div className="col-12">
-              <label className="form-label">Member</label>
-              <div className="form-check d-flex" style={{ gap: "40px" }}>
-                <div>
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="member"
-                    value="individual"
-                    onChange={handleChange}
-                    checked={employeeData.member === "individual"}
-                  />
-                  <label className="form-check-label">Individual</label>
-                </div>
-                <div>
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="member"
-                    value="group"
-                    onChange={handleChange}
-                    checked={employeeData.member === "group"}
-                  />
-                  <label className="form-check-label">Group</label>
-                </div>
-              </div>
-            </div>
-            {employeeData.member == "group" && (
-              <div className="col-6">
-                <label htmlFor="domain" className="form-label">
-                  Team
-                </label>
-                <select
-                  className="form-select"
-                  name="team"
-                  value={employeeData.team}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Team</option>
-                  {teams.map((team, index) => {
-                    return (
-                      <option key={index} value={team.name}>
-                        {team.name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            )}
-            <div className="col-6">
-              <label htmlFor="designation" className="form-label">
-                Grade
-              </label>
-              <select
-                className="form-select"
-                name="grade"
-                value={employeeData.grade}
-                onChange={handleChange}
-              >
-                <option value="">Select Grade</option>
-                {grades.map((grade, index) => {
-                  return (
-                    <option key={index} value={grade.name}>
-                      {grade.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <div className="col-12">
-              <label htmlFor="designation" className="form-label">
-                Tasks
-              </label>
-              {tasks.map((task, index) => {
-                return (
-                  <div className="form-check" key={index}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="tasks"
-                      value={task.name}
-                      onChange={handleChange}
-                      checked={employeeData.tasks.includes(task.name)}
-                    />
-                    <label className="form-check-label">{task.name}</label>
-                  </div>
-                );
-              })}
             </div>
             <div>
               <AuthButton

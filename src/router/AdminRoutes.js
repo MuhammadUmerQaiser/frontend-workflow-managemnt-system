@@ -13,6 +13,11 @@ import EmployeeDetail from "../pages/Admin/employees/EmployeeDetail";
 import EmployeeEdit from "../pages/Admin/employees/EmployeeEdit";
 import AdminProtectedRoute from "./RouteProtection/AdminProtectedRoutes";
 import UserWorkflowHistory from "../pages/Admin/workflow/UserWorkflowHistory";
+import Category from "../pages/Admin/category/Category";
+import SubCategory from "../pages/Admin/sub-category/SubCategory";
+import TaxPayer from "../pages/Admin/tax-payer/TaxPayer";
+import Desk from "../pages/Admin/desk/Desk";
+import WorkingGroup from "../pages/Admin/working-group/WorkingGroup";
 
 function AdminRoutes() {
   return (
@@ -133,6 +138,61 @@ function AdminRoutes() {
               path="/admin/history"
               exact
               Component={UserWorkflowHistory}
+            />
+          </Route>
+          <Route
+            path="/admin/categories"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/categories"
+              exact
+              Component={Category}
+            />
+          </Route>
+          <Route
+            path="/admin/sub-categories"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/sub-categories"
+              exact
+              Component={SubCategory}
+            />
+          </Route>
+          <Route
+            path="/admin/tax-payer"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/tax-payer"
+              exact
+              Component={TaxPayer}
+            />
+          </Route>
+          <Route
+            path="/admin/desk"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/desk"
+              exact
+              Component={Desk}
+            />
+          </Route>
+          <Route
+            path="/admin/groups"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/groups"
+              exact
+              Component={WorkingGroup}
             />
           </Route>
         </Routes>

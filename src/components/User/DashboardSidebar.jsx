@@ -107,15 +107,15 @@ const DashboardSidebar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/admin/desk" className="nav-link">
-                  <i className="bi bi-people"></i>
-                  <span>Desks</span>
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/admin/notification" className="nav-link">
                   <i className="bi bi-people"></i>
                   <span>Notification</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/desk" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Desks</span>
                 </Link>
               </li>
               <li className="nav-item">

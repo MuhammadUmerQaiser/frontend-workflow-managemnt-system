@@ -8,21 +8,21 @@ import AuthButton from "../../common/Button/AuthButton";
 import EmployeeDropdown from "./EmployeeDropdown";
 
 const AddNotificationFormComponent = () => {
-  const [employeeData, setEmployeeData] = useState({
-    notificationId: "",
+  const [notificationData, setNotificationData] = useState({
+    number: "",
     date: "",
     description: "",
+    information: [],
   });
 
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const adminService = useMemo(() => new AdminService(), []);
-  const [employees, setEmployees] = useState();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEmployeeData((prevData) => ({
+    setNotificationData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
@@ -30,9 +30,9 @@ const AddNotificationFormComponent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, domain, designation, role } = employeeData;
+    const { number, date, description, information } = notificationData;
 
-    if (!email || !password || !name || !domain || !designation || !role) {
+    if (!number || !date || !description || !information) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
       });
@@ -42,14 +42,19 @@ const AddNotificationFormComponent = () => {
 
     try {
       setLoading(true);
-      const response = await adminService.postData(employeeData);
-
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/create-notification`;
+      const response = await adminService.postData(endpoint, notificationData);
       if (response.status === 200) {
-        enqueueSnackbar("Employee Created Successfully", {
+        enqueueSnackbar("Notification Created Successfully", {
           variant: "success",
           autoHideDuration: 2000,
         });
-        navigate("/admin/employees");
+        navigate("/admin/notification");
+      } else if (response?.response?.status == 500) {
+        enqueueSnackbar("An error occured", {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
       }
     } catch (error) {
       enqueueSnackbar("An error occurred", {
@@ -59,39 +64,22 @@ const AddNotificationFormComponent = () => {
     } finally {
       setLoading(false);
     }
-    setEmployeeData({
-      name: "",
-      email: "",
-      password: "",
-      domain: "",
-      designation: "",
+    setNotificationData({
+      number: "",
+      date: "",
+      description: "",
+      information: [],
     });
   };
 
-  const init = async () => {
-    getAllEmployees();
-    console.log("employees");
-    console.log(employees);
+  const handleInformationDataFromEmployeeDropdown = (data) => {
+    setNotificationData((prevData) => ({
+      ...prevData,
+      information: data,
+    }));
   };
 
-  useEffect(() => {
-    init();
-  }, []);
-  const getAllEmployees = async () => {
-    try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-unassoicated-employees`;
-      const response = await adminService.getData(endpoint);
-      if (response.status === 200) {
-        setEmployees(response?.data?.data);
-      }
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar("An error occurred", {
-        variant: "error",
-        autoHideDuration: 2000,
-      });
-    }
-  };
+  useEffect(() => {}, []);
 
   return (
     <div className="container mt-4">
@@ -106,9 +94,9 @@ const AddNotificationFormComponent = () => {
               <input
                 type="number"
                 className="form-control"
-                id="notificationId"
-                name="notificationId"
-                value={employeeData.notificationId}
+                id="number"
+                name="number"
+                value={notificationData.number}
                 onChange={handleChange}
                 required
               />
@@ -122,7 +110,7 @@ const AddNotificationFormComponent = () => {
                 id="date"
                 name="date"
                 className="form-control"
-                value={employeeData.date}
+                value={notificationData.date}
                 onChange={handleChange}
               />
             </div>
@@ -136,11 +124,15 @@ const AddNotificationFormComponent = () => {
                 className="form-control"
                 rows="4"
                 cols="50"
-                value={employeeData.description}
+                value={notificationData.description}
                 onChange={handleChange}
               ></textarea>
             </div>
-            <EmployeeDropdown />
+            <EmployeeDropdown
+              handleInformationDataFromEmployeeDropdown={
+                handleInformationDataFromEmployeeDropdown
+              }
+            />
             <div>
               <AuthButton
                 label={"Add Notification"}

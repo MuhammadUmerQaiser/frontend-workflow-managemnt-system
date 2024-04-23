@@ -4,11 +4,11 @@ import axios from "axios";
 export class EmployeeService {
   constructor() {}
 
-  async getAllEmployees(page) {
+  async getAllEmployees(page, paginatedData = true) {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/get-all-employees?page=${page}`,
+        `http://localhost:5000/api/get-all-employees?page=${page}&paginatedData=${paginatedData}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

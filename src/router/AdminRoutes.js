@@ -6,7 +6,7 @@ import Domain from "../pages/Admin/general/domains/Domain";
 import Designation from "../pages/Admin/general/designations/Designation";
 import Team from "../pages/Admin/general/teams/Team";
 import Grade from "../pages/Admin/general/grades/Grade";
-import Task from "../pages/Admin/general/tasks/Task";
+// import Task from "../pages/Admin/general/tasks/Task";
 import Role from "../pages/Admin/general/roles/Role";
 import AddEmployeeForm from "../pages/Admin/employees/AddEmployeeForm";
 import EmployeeDetail from "../pages/Admin/employees/EmployeeDetail";
@@ -21,6 +21,8 @@ import Desk from "../pages/Admin/desk/Desk";
 import WorkingGroup from "../pages/Admin/working-group/WorkingGroup";
 import Notification from "../pages/Admin/notification/Notification";
 import AddNotificationForm from "../pages/Admin/notification/AddNotificationForm";
+import Task from "../pages/Admin/task/Task";
+import AddTaskForm from "../pages/Admin/task/AddTaskForm";
 
 function AdminRoutes() {
   return (
@@ -82,9 +84,6 @@ function AdminRoutes() {
           <Route path="/admin/grades" exact Component={AdminProtectedRoute}>
             <Route path="/admin/grades" exact Component={Grade} />
           </Route>
-          <Route path="/admin/tasks" exact Component={AdminProtectedRoute}>
-            <Route path="/admin/tasks" exact Component={Task} />
-          </Route>
           <Route path="/admin/roles" exact Component={AdminProtectedRoute}>
             <Route path="/admin/roles" exact Component={Role} />
           </Route>
@@ -131,6 +130,12 @@ function AdminRoutes() {
           </Route>
           <Route path="/admin/groups" exact Component={AdminProtectedRoute}>
             <Route path="/admin/groups" exact Component={WorkingGroup} />
+          </Route>
+          <Route path="/admin/tasks" exact Component={AdminProtectedRoute}>
+            <Route path="/admin/tasks" exact Component={Task} />
+          </Route>
+          <Route path="/admin/task/create" exact Component={AdminProtectedRoute}>
+            <Route path="/admin/task/create" exact Component={AddTaskForm} />
           </Route>
         </Routes>
       </BrowserRouter>

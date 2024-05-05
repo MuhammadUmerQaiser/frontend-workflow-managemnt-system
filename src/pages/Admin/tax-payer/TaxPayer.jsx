@@ -13,11 +13,12 @@ const TaxPayer = () => {
   const fields = [
     "_id",
     "name",
+    "ntn",
     "category-name",
     "sub_category-name",
     "action",
   ];
-  const createFileInputRef = useRef(null)
+  const createFileInputRef = useRef(null);
   const [taxPayers, setTaxPayers] = useState([]);
   const [taxPayerData, setTaxPayerData] = useState({
     name: "",
@@ -33,6 +34,7 @@ const TaxPayer = () => {
     name: "",
     category: "",
     sub_category: "",
+    ntn: ""
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -249,6 +251,19 @@ const TaxPayer = () => {
           />
         </div>
         <div className="col-12">
+          <label htmlFor="name" className="form-label">
+            National Tax Number (NTN)
+          </label>
+          <input
+            type="number"
+            className="form-control"
+            name="ntn"
+            value={editTaxPayerFormData.ntn}
+            onChange={handleEditChange}
+            required
+          />
+        </div>
+        <div className="col-12">
           <label htmlFor="domain" className="form-label">
             Categories
           </label>
@@ -295,8 +310,8 @@ const TaxPayer = () => {
   const createTaxPayer = async (e) => {
     e.preventDefault();
     const { name, category, sub_category, ntn, image_uploaded } = taxPayerData;
-    console.log(taxPayerData);
-    if (!name || !category || !sub_category || !ntn || !image_uploaded) {
+
+    if (!category || !sub_category) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
       });
@@ -319,9 +334,15 @@ const TaxPayer = () => {
           variant: "success",
           autoHideDuration: 2000,
         });
-        setTaxPayerData({ name: "", category: "", sub_category: "", ntn: "", image_uploaded: "" });
-        if(createFileInputRef.current){
-          createFileInputRef.current.value = '';
+        setTaxPayerData({
+          name: "",
+          category: "",
+          sub_category: "",
+          ntn: "",
+          image_uploaded: "",
+        });
+        if (createFileInputRef.current) {
+          createFileInputRef.current.value = "";
         }
         //close the modal
         const addModalCloseButton = document.getElementById(
@@ -349,9 +370,9 @@ const TaxPayer = () => {
 
   const editTaxPayer = async (e) => {
     e.preventDefault();
-    const { name, category, sub_category } = editTaxPayerFormData;
+    const { name, category, sub_category, ntn } = editTaxPayerFormData;
 
-    if (!name || !category || !sub_category) {
+    if (!name || !category || !sub_category || !ntn) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
       });
@@ -401,6 +422,7 @@ const TaxPayer = () => {
       name: data.name,
       category: data.category._id,
       sub_category: data.sub_category._id,
+      ntn: data.ntn,
     });
     getAllSubCategories(data.category._id);
   };

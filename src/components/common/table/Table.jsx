@@ -17,7 +17,9 @@ const Table = ({
   deleteModalButton = true,
   editModalButtonId = "",
   handleRowDataOnEditClick = null,
-  editButtonLink = true
+  editButtonLink = true,
+  responseButton = false,
+  responseLink = null
 }) => {
   return (
     <div className="table-responsive">
@@ -106,6 +108,16 @@ const Table = ({
                     style={{ marginLeft: "10px" }}
                   >
                     <i className="bi bi-eye-fill"></i>
+                  </Link>
+                )}
+
+                {responseButton && (
+                  <Link
+                    to={`${responseLink}/${rowData["_id"]}`}
+                    className="btn btn-sm btn-info"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <i className="bi bi-reply"></i>
                   </Link>
                 )}
               </td>

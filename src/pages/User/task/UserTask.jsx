@@ -11,23 +11,23 @@ const Task = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const adminService = useMemo(() => new AdminService(), []);
+  const userService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    getListOfAllTasks();
+    getListOfAllMyTasks();
   }, [currentPage || tasks]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const getListOfAllTasks = async () => {
+  const getListOfAllMyTasks = async () => {
     try {
         const endpoint = `${
             process.env.REACT_APP_BACKEND_URL
-          }/get-all-tasks?page=${currentPage}&paginatedData=${true}`;
-          const response = await adminService.getData(endpoint);
+          }/get-my-tasks?page=${currentPage}&paginatedData=${true}`;
+          const response = await userService.getData(endpoint);
       if (response.status === 200) {
         setTask(response?.data?.data);
         setCurrentPage(response?.data?.currentPage);
@@ -54,7 +54,7 @@ const Task = () => {
                   <Link to="/">Home</Link>
                 </li>
                 <li className="breadcrumb-item">
-                  <Link to="/admin/tasks">Tasks</Link>
+                  <Link to="/user/tasks">Tasks</Link>
                 </li>
                 <li className="breadcrumb-item active">Lists</li>
               </ol>
@@ -69,12 +69,6 @@ const Task = () => {
                       <div className="card-body">
                         <div className="d-flex align-items-start justify-content-between mb-3">
                           <h5 className="card-title">Tasks</h5>
-                          <Link
-                            to="/admin/task/create"
-                            className="btn btn-primary btn-sm mt-3"
-                          >
-                            Add New Task
-                          </Link>
                         </div>
                         <div className="table-reponsive">
                           <Table
@@ -84,14 +78,14 @@ const Task = () => {
                             itemsPerPage={pageSize}
                             totalPages={totalPages}
                             handlePageChange={handlePageChange}
-                            detailLink={"/admin/task/detail"}
+                            detailLink={"/user/task/detail"}
                             deleteModalButton={false}
-                            editLink={"/admin/employee/edit"}
+                            editLink={"/user/employee/edit"}
                             showViewButton={true}
                             editModalButton={false}
                             editButtonLink={false}
                             responseButton={true}
-                            responseLink={'/admin/task/response'}
+                            responseLink={'/user/task/response'}
                           />
                         </div>
                       </div>

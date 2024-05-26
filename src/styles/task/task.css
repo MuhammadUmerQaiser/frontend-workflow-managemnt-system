@@ -1,0 +1,44 @@
+.message {
+  max-width: 60%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.message-sender {
+  margin-left: auto;
+  background-color: #d1e7dd;
+  text-align: right;
+}
+
+.message-receiver {
+  margin-right: auto;
+  background-color: #f8d7da;
+  text-align: left;
+}
+
+.message-text {
+  margin: 0;
+}
+
+.task-transfer {
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input-group textarea {
+  flex-grow: 1;
+  margin-right: 10px;
+}

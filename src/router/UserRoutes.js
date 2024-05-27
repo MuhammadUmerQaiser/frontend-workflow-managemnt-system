@@ -18,12 +18,12 @@ function UserRoutes() {
             <Route path="/user/tasks" exact Component={UserTask} />
           </Route>
           <Route
-            path="/user/task/response/:taskId"
+            path="/user/task/response/:taskAssignmentId"
             exact
             Component={UserProtectedRoutes}
           >
             <Route
-              path="/user/task/response/:taskId"
+              path="/user/task/response/:taskAssignmentId"
               exact
               Component={UserTaskResponse}
             />

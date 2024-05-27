@@ -19,7 +19,7 @@ const Table = ({
   handleRowDataOnEditClick = null,
   editButtonLink = true,
   responseButton = false,
-  responseLink = null
+  responseLink = null,
 }) => {
   return (
     <div className="table-responsive">

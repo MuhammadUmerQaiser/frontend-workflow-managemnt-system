@@ -1,13 +1,16 @@
 // AddEmployeeForm.js
-import React from "react";
+import React, { useEffect } from "react";
 import "../../../styles/task/task.css";
 
 const TaskResponseLayout = ({
-  task,
+  taskAssignment,
   newMessage,
   setNewMessage,
   handleSendMessage,
 }) => {
+  useEffect(() => {
+    console.log('taskAssignment========================', taskAssignment)
+  }, [])
   return (
     <>
       <div
@@ -40,25 +43,27 @@ const TaskResponseLayout = ({
         </div>
         {/* Add more messages as needed */}
       </div>
-      <div className="message-input mt-3">
-        <div className="input-group">
-          <textarea
-            className="form-control"
-            placeholder="Type a message..."
-            rows="2"
-            style={{ resize: "none" }}
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-          ></textarea>
-          <button
-            className="btn btn-primary"
-            type="button"
-            onClick={handleSendMessage}
-          >
-            Send
-          </button>
+      {taskAssignment?.is_task_response && (
+        <div className="message-input mt-3">
+          <div className="input-group">
+            <textarea
+              className="form-control"
+              placeholder="Type a message..."
+              rows="2"
+              style={{ resize: "none" }}
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+            ></textarea>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={handleSendMessage}
+            >
+              Send
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

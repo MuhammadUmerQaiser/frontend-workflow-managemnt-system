@@ -23,6 +23,7 @@ import Notification from "../pages/Admin/notification/Notification";
 import AddNotificationForm from "../pages/Admin/notification/AddNotificationForm";
 import Task from "../pages/Admin/task/Task";
 import AddTaskForm from "../pages/Admin/task/AddTaskForm";
+import AdminTaskResponse from "../pages/Admin/task/AdminTaskResponse";
 
 function AdminRoutes() {
   return (
@@ -134,8 +135,23 @@ function AdminRoutes() {
           <Route path="/admin/tasks" exact Component={AdminProtectedRoute}>
             <Route path="/admin/tasks" exact Component={Task} />
           </Route>
-          <Route path="/admin/task/create" exact Component={AdminProtectedRoute}>
+          <Route
+            path="/admin/task/create"
+            exact
+            Component={AdminProtectedRoute}
+          >
             <Route path="/admin/task/create" exact Component={AddTaskForm} />
+          </Route>
+          <Route
+            path="/admin/task/response/:taskId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/task/response/:taskId"
+              exact
+              Component={AdminTaskResponse}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

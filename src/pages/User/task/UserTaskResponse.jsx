@@ -6,18 +6,18 @@ import { AdminService } from "../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
 
 const UserTaskResponse = () => {
-  const { taskId } = useParams();
-  const [task, setTask] = useState(null);
+  const { taskAssignmentId } = useParams();
+  const [taskAssignment, setTaskAssignment] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const userService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
 
   const getTaskDetailById = async () => {
     try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-task/${taskId}`;
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-task-assignment/${taskAssignmentId}`;
       const response = await userService.getData(endpoint);
       if (response.status === 200) {
-        setTask(response?.data?.data);
+        setTaskAssignment(response?.data?.data);
       }
     } catch (error) {
       enqueueSnackbar("An error occurred", {
@@ -33,7 +33,7 @@ const UserTaskResponse = () => {
 
   useEffect(() => {
     getTaskDetailById();
-  }, [taskId]);
+  }, [taskAssignmentId]);
   return (
     <>
       <UserLayout>
@@ -45,7 +45,9 @@ const UserTaskResponse = () => {
                 <li className="breadcrumb-item">
                   <Link to="/user">Home</Link>
                 </li>
-                <li className="breadcrumb-item active">Task Id: {task?._id}</li>
+                <li className="breadcrumb-item active">
+                  Task Id: {taskAssignment?.task?._id}
+                </li>
               </ol>
             </nav>
           </div>
@@ -58,12 +60,13 @@ const UserTaskResponse = () => {
                       <h5 className="card-title">
                         Task Room{" "}
                         <span className="card-title">
-                          Assigned By: {task?.assigned_by?.name} (Role:{" "}
-                          {task?.assigned_by?.role})
+                          Assigned By:{" "}
+                          {taskAssignment?.assignment_reference?.name} (Role:{" "}
+                          {taskAssignment?.assignment_reference?.role})
                         </span>
                       </h5>
                       <TaskResponsesLayout
-                        task={task}
+                        taskAssignment={taskAssignment}
                         newMessage={newMessage}
                         setNewMessage={setNewMessage}
                         handleSendMessage={handleSendMessage}

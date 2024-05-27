@@ -6,7 +6,7 @@ import { useSnackbar } from "notistack";
 import { AdminService } from "../../../services/admin/admin.service";
 
 const Task = () => {
-  const fields = ["_id", "name", "action"];
+  const fields = ["_id", "task-name", "action"];
   const [tasks, setTask] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -26,7 +26,7 @@ const Task = () => {
     try {
         const endpoint = `${
             process.env.REACT_APP_BACKEND_URL
-          }/get-my-tasks?page=${currentPage}&paginatedData=${true}`;
+          }/get-my-tasks-assignments?page=${currentPage}&paginatedData=${true}`;
           const response = await userService.getData(endpoint);
       if (response.status === 200) {
         setTask(response?.data?.data);

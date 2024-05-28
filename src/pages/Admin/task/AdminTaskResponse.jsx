@@ -8,8 +8,8 @@ import { useSnackbar } from "notistack";
 const AdminTaskResponse = () => {
   const { taskId } = useParams();
   const [taskAssignments, setTaskAssignments] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
   const [selectedTab, setSelectedTab] = useState(null);
+  const [reciever, setReciever] = useState(null);
   const userService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -22,6 +22,7 @@ const AdminTaskResponse = () => {
         setTaskAssignments(assignments);
         if (assignments.length === 1) {
           setSelectedTab(0);
+          setReciever(response?.data?.data[0].assigned_to);
         }
       }
     } catch (error) {
@@ -32,9 +33,10 @@ const AdminTaskResponse = () => {
     }
   };
 
-  const handleSendMessage = async () => {
-    console.log(newMessage);
-  };
+  const handleSelectedTab = (index, assignment) => {
+    setSelectedTab(index);
+    setReciever(assignment.assigned_to)
+  }
 
   useEffect(() => {
     getListOfTaskAssignmentOnBasisOfTask();
@@ -85,7 +87,7 @@ const AdminTaskResponse = () => {
                             className={`nav-link ${
                               index === selectedTab ? "active" : ""
                             }`}
-                            onClick={() => setSelectedTab(index)}
+                            onClick={() => handleSelectedTab(index, assignment)}
                           >
                             {assignment.assigned_to.name}
                           </button>
@@ -95,9 +97,7 @@ const AdminTaskResponse = () => {
                     {selectedTab !== null && taskAssignments[selectedTab] && (
                       <TaskResponsesLayout
                         taskAssignment={taskAssignments[selectedTab]}
-                        newMessage={newMessage}
-                        setNewMessage={setNewMessage}
-                        handleSendMessage={handleSendMessage}
+                        reciever={reciever}
                       />
                     )}
                   </div>

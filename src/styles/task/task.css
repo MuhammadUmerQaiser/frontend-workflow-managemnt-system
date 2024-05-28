@@ -42,3 +42,30 @@
   flex-grow: 1;
   margin-right: 10px;
 }
+
+.employee-select-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures the dropdown moves to the right side */
+  gap: 20px; /* Adjust the spacing between the elements as needed */
+}
+
+.employee-label {
+  display: block;
+  font-weight: 600;
+}
+
+.employee-select {
+  width: 300px; /* Adjust the width as needed */
+}
+
+.employee-select .MuiAutocomplete-root {
+  width: 100%;
+}
+
+.employee-select .MuiFormControl-root {
+  width: 100%; /* Ensures the TextField takes full width of the container */
+}
+
+
+

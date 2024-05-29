@@ -64,7 +64,7 @@ const AdminTaskResponse = () => {
                   <div className="card-body">
                     <h5 className="card-title">
                       Task Room
-                      {taskAssignments.length > 0 && selectedTab !== null && (
+                      {/* {taskAssignments.length > 0 && selectedTab !== null && (
                         <span className="card-title">
                           Assigned By:{" "}
                           {
@@ -78,7 +78,7 @@ const AdminTaskResponse = () => {
                           }
                           )
                         </span>
-                      )}
+                      )} */}
                     </h5>
                     <ul className="nav nav-tabs">
                       {taskAssignments.map((assignment, index) => (

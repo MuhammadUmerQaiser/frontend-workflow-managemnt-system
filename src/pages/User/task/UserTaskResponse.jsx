@@ -38,13 +38,13 @@ const UserTaskResponse = () => {
           } else {
             setAllowResponseMessage(response?.data?.data?.is_task_response);
             setTaskAssignedBy(response?.data?.data?.assignment_reference);
-            console.log('else')
+            console.log("else");
           }
         } else if (
           response?.data?.data &&
           response?.data?.data?.is_task_response
         ) {
-          console.log('else if')
+          console.log("else if");
           setAllowResponseMessage(response?.data?.data?.is_task_response);
           setTaskAssignedBy(response?.data?.data?.assignment_reference);
         }
@@ -110,6 +110,37 @@ const UserTaskResponse = () => {
     }
   };
 
+  const handleCloseTaskRequest = async (e) => {
+    e.preventDefault();
+
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/close-task-assignment-request/${taskAssignmentId}`;
+      const response = await userService.postData(endpoint, {});
+
+      if (response.status === 200) {
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        getTaskAssignmentDetailById();
+      }
+      if (
+        response?.response?.status === 500 ||
+        response?.response?.status === 400
+      ) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
+
   useEffect(() => {
     getTaskAssignmentDetailById();
     getEmployeesDetailsWithLowerLevels();
@@ -137,7 +168,7 @@ const UserTaskResponse = () => {
                 <div className="container mt-4">
                   <div className="card">
                     <div className="card-body">
-                      <div className="employee-select-container mb-3">
+                      <div className="employee-select-container">
                         <h5 className="card-title">
                           Task Room{" "}
                           {taskAssignedBy && (
@@ -148,29 +179,66 @@ const UserTaskResponse = () => {
                           )}
                         </h5>
                         {allowResponseMessage && (
-                          <div>
-                            <label className="form-label employee-label mt-3">
-                              Employees
-                            </label>
-                            <Autocomplete
-                              id="employee-select"
-                              className="employee-select"
-                              options={employeeWithLowerLevels}
-                              getOptionLabel={(option) => option.name}
-                              onChange={(event, value) =>
-                                handleMuiSelectChange(event, value)
-                              }
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Select Employee"
-                                  variant="outlined"
-                                />
-                              )}
-                            />
-                          </div>
+                          <>
+                            <div>
+                              <label className="form-label employee-label mt-3">
+                                Employees
+                              </label>
+                              <Autocomplete
+                                id="employee-select"
+                                className="employee-select"
+                                options={employeeWithLowerLevels}
+                                getOptionLabel={(option) => option.name}
+                                onChange={(event, value) =>
+                                  handleMuiSelectChange(event, value)
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Select Employee"
+                                    variant="outlined"
+                                  />
+                                )}
+                              />
+                            </div>
+                          </>
                         )}
                       </div>
+                      {allowResponseMessage && (
+                        <div className="mt-2 mb-3">
+                          {(taskAssignment?.close_assignment_request ===
+                            "none" ||
+                            taskAssignment?.close_assignment_request ===
+                              "rejected") && (
+                            <button
+                              className="btn btn-success btn-sm mb-3"
+                              onClick={(e) => handleCloseTaskRequest(e)}
+                            >
+                              Close Task
+                            </button>
+                          )}
+                          {taskAssignment?.close_assignment_request ===
+                            "rejected" && (
+                            <span className="text-danger">
+                              Your task close request is rejected. Reason:{" "}
+                              {taskAssignment?.task_rejection_reason}.
+                            </span>
+                          )}
+                          {taskAssignment?.close_assignment_request ===
+                            "accepted" && (
+                            <span className="text-success">
+                              Your task close request is accepted.
+                            </span>
+                          )}
+                          {taskAssignment?.close_assignment_request ===
+                            "pending" && (
+                            <span className="text-info">
+                              Your task close request is pending.
+                            </span>
+                          )}
+                        </div>
+                      )}
+
                       {taskAssignment &&
                         taskAssignment?.assignment_reference && (
                           <TaskResponsesLayout

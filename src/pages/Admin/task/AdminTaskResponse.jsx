@@ -4,12 +4,14 @@ import UserLayout from "../../../components/User/UserLayout";
 import TaskResponsesLayout from "../../../components/User/task/TaskResponsesLayout";
 import { AdminService } from "../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
+import AddModal from "../../../components/common/modal/AddModal";
 
 const AdminTaskResponse = () => {
   const { taskId } = useParams();
   const [taskAssignments, setTaskAssignments] = useState([]);
   const [selectedTab, setSelectedTab] = useState(null);
   const [reciever, setReciever] = useState(null);
+  const [loading, setLoading] = useState(false);
   const userService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -35,8 +37,25 @@ const AdminTaskResponse = () => {
 
   const handleSelectedTab = (index, assignment) => {
     setSelectedTab(index);
-    setReciever(assignment.assigned_to)
-  }
+    setReciever(assignment.assigned_to);
+  };
+
+  const rejectionRequestModalForm = () => {
+    return (
+      <form className="row g-3" method="POST">
+        <div className="col-12">
+          <label htmlFor="name" className="form-label">
+            Name
+          </label>
+          <input type="text" className="form-control" name="name" required />
+        </div>
+      </form>
+    );
+  };
+
+  const handleTaskCloseRequest = (e, status = 'rejected') => {
+    console.log(status);
+  };
 
   useEffect(() => {
     getListOfTaskAssignmentOnBasisOfTask();
@@ -80,6 +99,37 @@ const AdminTaskResponse = () => {
                         </span>
                       )} */}
                     </h5>
+                    {selectedTab !== null &&
+                    taskAssignments[selectedTab] &&
+                    taskAssignments[selectedTab]?.close_assignment_request ===
+                      "pending" ? (
+                      <div className="mb-3">
+                        <button
+                          className="btn btn-success btn-sm"
+                          style={{ marginRight: "10px" }}
+                          onClick={(e) => handleTaskCloseRequest(e, "accepted")}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          data-bs-toggle="modal"
+                          data-bs-target="#rejectionModalForCloseTaskAssignment"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    ) : (
+                      taskAssignments[selectedTab]?.close_assignment_request ===
+                        "accepted" && (
+                        <div className="mb-3">
+                          <span className="text-success">
+                            Task has been closed.
+                          </span>
+                        </div>
+                      )
+                    )}
+
                     <ul className="nav nav-tabs">
                       {taskAssignments.map((assignment, index) => (
                         <li className="nav-item" key={index}>
@@ -106,6 +156,14 @@ const AdminTaskResponse = () => {
             </div>
           </div>
         </section>
+        <AddModal
+          modalId={"rejectionModalForCloseTaskAssignment"}
+          createItem={handleTaskCloseRequest}
+          loading={loading}
+          heading={"Reject Request"}
+        >
+          {rejectionRequestModalForm()}
+        </AddModal>
       </main>
     </UserLayout>
   );

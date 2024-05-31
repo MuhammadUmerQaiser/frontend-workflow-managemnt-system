@@ -14,6 +14,7 @@ const UserTaskResponse = () => {
   const [taskAssignment, setTaskAssignment] = useState(null);
   const [taskAssignedBy, setTaskAssignedBy] = useState(null);
   const [allowResponseMessage, setAllowResponseMessage] = useState(true);
+  const [checkForTaskClosure, setCheckForTaskClosure] = useState(true);
   const [employeeWithLowerLevels, setEmployeeWithLowerLevels] = useState([]);
   const userService = useMemo(() => new AdminService(), []);
   const [reciever, setReciever] = useState(null);
@@ -24,36 +25,52 @@ const UserTaskResponse = () => {
     try {
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-task-assignment/${taskAssignmentId}`;
       const response = await userService.getData(endpoint);
+
       if (response.status === 200) {
-        setTaskAssignment(response?.data?.data);
-        console.log(response?.data?.data);
-        setReciever(response?.data?.data?.assignment_reference);
-        if (response?.data?.data && response?.data?.data.transfer.length > 0) {
-          const taskTransferAssignee = response?.data?.data.transfer.find(
-            (item) => item.assignee._id === user.id
-          );
-          if (taskTransferAssignee) {
-            setAllowResponseMessage(taskTransferAssignee?.is_task_response);
-            setTaskAssignedBy(taskTransferAssignee?.assigned_by);
-          } else {
-            setAllowResponseMessage(response?.data?.data?.is_task_response);
-            setTaskAssignedBy(response?.data?.data?.assignment_reference);
-            console.log("else");
-          }
-        } else if (
-          response?.data?.data &&
-          response?.data?.data?.is_task_response
-        ) {
-          console.log("else if");
-          setAllowResponseMessage(response?.data?.data?.is_task_response);
-          setTaskAssignedBy(response?.data?.data?.assignment_reference);
-        }
+        const data = response?.data?.data;
+        setTaskAssignment(data);
+        console.log(data);
+        setReciever(data?.assignment_reference);
+        handleTaskAssignedAndAllowedResponseForThatTask(data);
+        handleTaskCloseCheckForCurrentTaskAssignment(data);
       }
     } catch (error) {
       enqueueSnackbar("An error occurred", {
         variant: "error",
         autoHideDuration: 2000,
       });
+    }
+  };
+
+  const handleTaskAssignedAndAllowedResponseForThatTask = (data) => {
+    if (data && data.transfer.length > 0) {
+      const taskTransferAssignee = data.transfer.find(
+        (item) => item.assignee._id === user.id
+      );
+      if (taskTransferAssignee) {
+        setAllowResponseMessage(taskTransferAssignee?.is_task_response);
+        setCheckForTaskClosure(taskTransferAssignee?.is_task_response);
+        setTaskAssignedBy(taskTransferAssignee?.assigned_by);
+      } else {
+        setAllowResponseMessage(data?.is_task_response);
+        setCheckForTaskClosure(data?.is_task_response);
+        setTaskAssignedBy(data?.assignment_reference);
+        console.log("else");
+      }
+    } else if (data && data?.is_task_response) {
+      console.log("else if");
+      setAllowResponseMessage(data?.is_task_response);
+      setCheckForTaskClosure(data?.is_task_response);
+      setTaskAssignedBy(data?.assignment_reference);
+    }
+  };
+
+  const handleTaskCloseCheckForCurrentTaskAssignment = (data) => {
+    if (
+      data &&
+      data?.close_assignment_request
+    ) {
+      setAllowResponseMessage(false);
     }
   };
 
@@ -204,7 +221,7 @@ const UserTaskResponse = () => {
                           </>
                         )}
                       </div>
-                      {allowResponseMessage && (
+                      {checkForTaskClosure && (
                         <div className="mt-2 mb-3">
                           {(taskAssignment?.close_assignment_request ===
                             "none" ||

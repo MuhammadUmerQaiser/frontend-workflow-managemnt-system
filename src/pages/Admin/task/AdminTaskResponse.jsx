@@ -9,7 +9,9 @@ import AddModal from "../../../components/common/modal/AddModal";
 const AdminTaskResponse = () => {
   const { taskId } = useParams();
   const [taskAssignments, setTaskAssignments] = useState([]);
+  const [allowResponseMessage, setAllowResponseMessage] = useState(true);
   const [selectedTab, setSelectedTab] = useState(null);
+  const [reason, setReason] = useState(null);
   const [reciever, setReciever] = useState(null);
   const [loading, setLoading] = useState(false);
   const userService = useMemo(() => new AdminService(), []);
@@ -25,6 +27,9 @@ const AdminTaskResponse = () => {
         if (assignments.length === 1) {
           setSelectedTab(0);
           setReciever(response?.data?.data[0].assigned_to);
+          if(response?.data?.data[0].close_assignment_request == 'accepted'){
+            setAllowResponseMessage(false);
+          }
         }
       }
     } catch (error) {
@@ -38,6 +43,9 @@ const AdminTaskResponse = () => {
   const handleSelectedTab = (index, assignment) => {
     setSelectedTab(index);
     setReciever(assignment.assigned_to);
+    if(assignment?.close_assignment_request == 'accepted'){
+      setAllowResponseMessage(false);
+    }
   };
 
   const rejectionRequestModalForm = () => {
@@ -45,16 +53,60 @@ const AdminTaskResponse = () => {
       <form className="row g-3" method="POST">
         <div className="col-12">
           <label htmlFor="name" className="form-label">
-            Name
+            Reason 
           </label>
-          <input type="text" className="form-control" name="name" required />
+          <input
+            type="text"
+            className="form-control"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            name="name"
+            required
+          />
         </div>
       </form>
     );
   };
 
-  const handleTaskCloseRequest = (e, status = 'rejected') => {
-    console.log(status);
+  const handleTaskCloseRequest = async (e, status = "rejected") => {
+    e.preventDefault();
+    const data = {
+      task_close_request_status: status,
+      reason: reason,
+    };
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/update-the-request-status-for-close-task/${taskAssignments[selectedTab]?._id}`;
+      const response = await userService.postData(endpoint, data);
+
+      if (response.status === 200) {
+        enqueueSnackbar(response?.data?.message, {
+          variant: "success",
+          autoHideDuration: 2000,
+        });
+        getListOfTaskAssignmentOnBasisOfTask();
+        setReason(null);
+        const addModalCloseButton = document.getElementById(
+          "addModalCloseButton"
+        );
+        if (addModalCloseButton && status == "rejected") {
+          addModalCloseButton.click();
+        }
+      }
+      if (
+        response?.response?.status === 500 ||
+        response?.response?.status === 400
+      ) {
+        enqueueSnackbar(response?.response?.data?.message, {
+          variant: "error",
+          autoHideDuration: 2000,
+        });
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
   };
 
   useEffect(() => {
@@ -148,6 +200,7 @@ const AdminTaskResponse = () => {
                       <TaskResponsesLayout
                         taskAssignment={taskAssignments[selectedTab]}
                         reciever={reciever}
+                        allowResponseMessage={allowResponseMessage}
                       />
                     )}
                   </div>

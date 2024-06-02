@@ -28,6 +28,8 @@ import Task from "../pages/Admin/task/Task";
 import AddTaskForm from "../pages/Admin/task/AddTaskForm";
 import AdminTaskResponse from "../pages/Admin/task/AdminTaskResponse";
 import TaskDetail from "../pages/Admin/task/TaskDetail";
+import Profile from "../pages/User/Profile";
+import DeskHistory from "../pages/Admin/history/DeskHistory";
 
 function AdminRoutes() {
   return (
@@ -199,6 +201,28 @@ function AdminRoutes() {
               path="/admin/task/detail/:taskId"
               exact
               Component={TaskDetail}
+            />
+          </Route>
+          <Route
+            path="/admin/profile"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/profile"
+              exact
+              Component={Profile}
+            />
+          </Route>
+          <Route
+            path="/admin/desk-history"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/desk-history"
+              exact
+              Component={DeskHistory}
             />
           </Route>
         </Routes>

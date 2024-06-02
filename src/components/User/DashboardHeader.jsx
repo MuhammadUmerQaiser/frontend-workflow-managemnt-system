@@ -1,10 +1,12 @@
 import { useState } from "react";
 import srb from "../../assets/srb.png";
 import profile_image from "../../assets/img/profile-img.jpg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../../helpers/helpers";
 
 const DashboardHeader = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const user = isAuthenticated();
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -28,7 +30,7 @@ const DashboardHeader = () => {
           <i className="bi bi-list toggle-sidebar-btn" onClick={toggleSidebar}></i>
         </div>
 
-        <div className="search-bar">
+        {/* <div className="search-bar">
           <form
             className="search-form d-flex align-items-center"
             method="POST"
@@ -44,7 +46,7 @@ const DashboardHeader = () => {
               <i className="bi bi-search"></i>
             </button>
           </form>
-        </div>
+        </div> */}
 
         <nav className="header-nav ms-auto">
           <ul className="d-flex align-items-center">
@@ -54,55 +56,29 @@ const DashboardHeader = () => {
                 href="#"
                 data-bs-toggle="dropdown"
               >
-                <img src={profile_image} alt="Profile" className="rounded-circle" />
+                {/* <img src={profile_image} alt="Profile" className="rounded-circle" /> */}
                 <span className="d-none d-md-block dropdown-toggle ps-2">
-                  M. Umer
+                  {user.name}
                 </span>{" "}
               </a>
 
               <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                 <li className="dropdown-header">
-                  <h6>Muhammad Umer</h6>
-                  <span>Web Designer</span>
+                  <h6>{user.name}</h6>
+                  <span>{user.role}</span>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />
                 </li>
 
                 <li>
-                  <a
+                  <Link
                     className="dropdown-item d-flex align-items-center"
-                    href="users-profile.html"
+                    to={`/${user.role == 'Admin' ? 'admin' : 'user'}/profile`}
                   >
                     <i className="bi bi-person"></i>
                     <span>My Profile</span>
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-
-                <li>
-                  <a
-                    className="dropdown-item d-flex align-items-center"
-                    href="users-profile.html"
-                  >
-                    <i className="bi bi-gear"></i>
-                    <span>Account Settings</span>
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-
-                <li>
-                  <a
-                    className="dropdown-item d-flex align-items-center"
-                    href="pages-faq.html"
-                  >
-                    <i className="bi bi-question-circle"></i>
-                    <span>Need Help?</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <hr className="dropdown-divider" />

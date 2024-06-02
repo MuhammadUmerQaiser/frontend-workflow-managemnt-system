@@ -6,6 +6,8 @@ import UserTaskResponse from "../pages/User/task/UserTaskResponse";
 import UserTaskDetail from "../pages/User/task/UserTaskDetail";
 import UserWorkflowHistory from "../pages/User/workflow/UserWorkflowHistory";
 import UserProtectedRoutes from "./RouteProtection/UserProtectedRoutes";
+import Profile from "../pages/User/Profile";
+import DeskHistory from "../pages/User/history/DeskHistory";
 
 function UserRoutes() {
   return (
@@ -39,6 +41,20 @@ function UserRoutes() {
               exact
               Component={UserTaskDetail}
             />
+          </Route>
+          <Route
+            path="/user/profile"
+            exact
+            Component={UserProtectedRoutes}
+          >
+            <Route
+              path="/user/profile"
+              exact
+              Component={Profile}
+            />
+          </Route>
+          <Route path="/user/desk-history" exact Component={UserProtectedRoutes}>
+            <Route path="/user/desk-history" exact Component={DeskHistory} />
           </Route>
           <Route path="/user/history" exact Component={UserProtectedRoutes}>
             <Route path="/user/history" exact Component={UserWorkflowHistory} />

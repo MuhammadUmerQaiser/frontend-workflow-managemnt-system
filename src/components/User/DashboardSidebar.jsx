@@ -125,9 +125,9 @@ const DashboardSidebar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/admin/history" className="nav-link">
+                <Link to="/admin/desk-history" className="nav-link">
                   <i className="bi bi-people"></i>
-                  <span>History</span>
+                  <span>Employee Desk History</span>
                 </Link>
               </li>
             </>
@@ -141,9 +141,9 @@ const DashboardSidebar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/user/history" className="nav-link">
+                <Link to="/user/desk-history" className="nav-link">
                   <i className="bi bi-people"></i>
-                  <span>History</span>
+                  <span>Desk History</span>
                 </Link>
               </li>
             </>

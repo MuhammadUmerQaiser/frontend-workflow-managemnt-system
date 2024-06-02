@@ -3,11 +3,14 @@ import UserLayout from "../../../components/User/UserLayout";
 import { useSnackbar } from "notistack";
 import { Link, useParams } from "react-router-dom";
 import { AdminService } from "../../../services/admin/admin.service";
+import { isAuthenticated } from "../../../helpers/helpers";
 
 const UserTaskDetail = () => {
   const [taskAssignment, setTaskAssignment] = useState({});
+  const [taskAssignedBy, setTaskAssignedBy] = useState(null);
   const adminService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
+  const user  = isAuthenticated();
   const params = useParams();
 
   useEffect(() => {
@@ -20,13 +23,30 @@ const UserTaskDetail = () => {
       const response = await adminService.getData(endpoint);
       if (response.status === 200) {
         setTaskAssignment(response?.data?.data);
-        console.log(response?.data?.data);
+        handleTaskAssignedForThatTask(response?.data?.data)
       }
     } catch (error) {
       enqueueSnackbar("An error occurred", {
         variant: "error",
         autoHideDuration: 2000,
       });
+    }
+  };
+
+  const handleTaskAssignedForThatTask = (data) => {
+    if (data && data.transfer.length > 0) {
+      const taskTransferAssignee = data.transfer.find(
+        (item) => item.assignee._id === user.id
+      );
+      if (taskTransferAssignee) {
+        setTaskAssignedBy(taskTransferAssignee?.assigned_by);
+      } else {
+        setTaskAssignedBy(data?.assignment_reference);
+        console.log("else");
+      }
+    } else if (data && data?.is_task_response) {
+      console.log("else if");
+      setTaskAssignedBy(data?.assignment_reference);
     }
   };
 
@@ -101,7 +121,7 @@ const UserTaskDetail = () => {
                                   <b>Assigned By</b>
                                 </div>
                                 <div className="col-lg-9 col-md-8 text-primary">
-                                  {`Task created by: ${taskAssignment?.assignment_reference?.name}, Role: ${taskAssignment?.assignment_reference?.role}`}
+                                  {`${taskAssignedBy?.name}, Role: ${taskAssignedBy?.role}`}
                                 </div>
                               </div>
                             </div>

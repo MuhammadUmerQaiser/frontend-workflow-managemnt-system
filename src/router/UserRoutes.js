@@ -8,6 +8,7 @@ import UserWorkflowHistory from "../pages/User/workflow/UserWorkflowHistory";
 import UserProtectedRoutes from "./RouteProtection/UserProtectedRoutes";
 import Profile from "../pages/User/Profile";
 import DeskHistory from "../pages/User/history/DeskHistory";
+import TaskHistory from "../pages/User/history/TaskHistory";
 
 function UserRoutes() {
   return (
@@ -55,6 +56,9 @@ function UserRoutes() {
           </Route>
           <Route path="/user/desk-history" exact Component={UserProtectedRoutes}>
             <Route path="/user/desk-history" exact Component={DeskHistory} />
+          </Route>
+          <Route path="/user/task-history" exact Component={UserProtectedRoutes}>
+            <Route path="/user/task-history" exact Component={TaskHistory} />
           </Route>
           <Route path="/user/history" exact Component={UserProtectedRoutes}>
             <Route path="/user/history" exact Component={UserWorkflowHistory} />

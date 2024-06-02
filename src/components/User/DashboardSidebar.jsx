@@ -130,6 +130,12 @@ const DashboardSidebar = () => {
                   <span>Employee Desk History</span>
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link to="/admin/task-history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Employee Task History</span>
+                </Link>
+              </li>
             </>
           )}
           {user.role != "Admin" && (
@@ -144,6 +150,12 @@ const DashboardSidebar = () => {
                 <Link to="/user/desk-history" className="nav-link">
                   <i className="bi bi-people"></i>
                   <span>Desk History</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/user/task-history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Task History</span>
                 </Link>
               </li>
             </>

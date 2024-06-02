@@ -27,8 +27,10 @@ const AdminTaskResponse = () => {
         if (assignments.length === 1) {
           setSelectedTab(0);
           setReciever(response?.data?.data[0].assigned_to);
-          if(response?.data?.data[0].close_assignment_request == 'accepted'){
+          if (response?.data?.data[0].close_assignment_request == "accepted") {
             setAllowResponseMessage(false);
+          } else {
+            setAllowResponseMessage(true);
           }
         }
       }
@@ -41,10 +43,13 @@ const AdminTaskResponse = () => {
   };
 
   const handleSelectedTab = (index, assignment) => {
+    console.log(assignment);
     setSelectedTab(index);
     setReciever(assignment.assigned_to);
-    if(assignment?.close_assignment_request == 'accepted'){
+    if (assignment?.close_assignment_request == "accepted") {
       setAllowResponseMessage(false);
+    } else {
+      setAllowResponseMessage(true);
     }
   };
 
@@ -53,7 +58,7 @@ const AdminTaskResponse = () => {
       <form className="row g-3" method="POST">
         <div className="col-12">
           <label htmlFor="name" className="form-label">
-            Reason 
+            Reason
           </label>
           <input
             type="text"

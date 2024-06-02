@@ -106,7 +106,7 @@ const Notification = () => {
                             handlePageChange={handlePageChange}
                             deleteModalButton={false}
                             editLink={"/admin/employee/edit"}
-                            detailLink={"/admin/desk"}
+                            detailLink={"/admin/notification/detail"}
                             showViewButton={true}
                             editModalButton={false}
                             editButtonLink={false}

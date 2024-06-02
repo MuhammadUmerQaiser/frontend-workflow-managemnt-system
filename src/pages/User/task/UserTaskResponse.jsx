@@ -68,7 +68,7 @@ const UserTaskResponse = () => {
   const handleTaskCloseCheckForCurrentTaskAssignment = (data) => {
     if (
       data &&
-      data?.close_assignment_request
+      data?.close_assignment_request == 'accepted'
     ) {
       setAllowResponseMessage(false);
     }

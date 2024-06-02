@@ -367,7 +367,7 @@ const WorkingGroup = () => {
                             handlePageChange={handlePageChange}
                             deleteModalButton={false}
                             editLink={"/admin/employee/edit"}
-                            detailLink={"/admin/group"}
+                            detailLink={"/admin/group/detail"}
                             showViewButton={true}
                             editModalButton={false}
                             editButtonLink={false}

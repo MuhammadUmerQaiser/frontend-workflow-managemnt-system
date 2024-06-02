@@ -26,7 +26,7 @@ const Table = ({
       <table className="table table-striped">
         <thead>
           <tr>
-            {fields.map((item, index) => (
+            {fields?.map((item, index) => (
               <th key={index} style={{ textTransform: "capitalize" }}>
                 {item == "_id" ? "Id" : item.replace(/[-_]/g, " ")}
               </th>
@@ -34,7 +34,7 @@ const Table = ({
           </tr>
         </thead>
         <tbody>
-          {data.map((rowData, rowIndex) => (
+          {data?.map((rowData, rowIndex) => (
             <tr key={rowIndex}>
               {fields.map((field, fieldIndex) => {
                 if (field !== "action" && field != "active") {

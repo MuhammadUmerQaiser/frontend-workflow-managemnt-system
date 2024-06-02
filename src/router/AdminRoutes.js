@@ -17,13 +17,17 @@ import Category from "../pages/Admin/category/Category";
 import SubCategory from "../pages/Admin/sub-category/SubCategory";
 import TaxPayer from "../pages/Admin/tax-payer/TaxPayer";
 import Desk from "../pages/Admin/desk/Desk";
+import DeskDetail from "../pages/Admin/desk/DeskDetail";
 // import Notification from "../pages/Admin/notification/Notification";
 import WorkingGroup from "../pages/Admin/working-group/WorkingGroup";
+import WorkingGroupDetail from "../pages/Admin/working-group/WorkingGroupDetail";
 import Notification from "../pages/Admin/notification/Notification";
+import NotificationDetail from "../pages/Admin/notification/NotificationDetail";
 import AddNotificationForm from "../pages/Admin/notification/AddNotificationForm";
 import Task from "../pages/Admin/task/Task";
 import AddTaskForm from "../pages/Admin/task/AddTaskForm";
 import AdminTaskResponse from "../pages/Admin/task/AdminTaskResponse";
+import TaskDetail from "../pages/Admin/task/TaskDetail";
 
 function AdminRoutes() {
   return (
@@ -112,11 +116,33 @@ function AdminRoutes() {
             <Route path="/admin/desk" exact Component={Desk} />
           </Route>
           <Route
+            path="/admin/desk/detail/:deskId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/desk/detail/:deskId"
+              exact
+              Component={DeskDetail}
+            />
+          </Route>
+          <Route
             path="/admin/notification"
             exact
             Component={AdminProtectedRoute}
           >
             <Route path="/admin/notification" exact Component={Notification} />
+          </Route>
+          <Route
+            path="/admin/notification/detail/:notificationId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/notification/detail/:notificationId"
+              exact
+              Component={NotificationDetail}
+            />
           </Route>
           <Route
             path="/admin/notification/create"
@@ -131,6 +157,17 @@ function AdminRoutes() {
           </Route>
           <Route path="/admin/groups" exact Component={AdminProtectedRoute}>
             <Route path="/admin/groups" exact Component={WorkingGroup} />
+          </Route>
+          <Route
+            path="/admin/group/detail/:workingGroupId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/group/detail/:workingGroupId"
+              exact
+              Component={WorkingGroupDetail}
+            />
           </Route>
           <Route path="/admin/tasks" exact Component={AdminProtectedRoute}>
             <Route path="/admin/tasks" exact Component={Task} />
@@ -151,6 +188,17 @@ function AdminRoutes() {
               path="/admin/task/response/:taskId"
               exact
               Component={AdminTaskResponse}
+            />
+          </Route>
+          <Route
+            path="/admin/task/detail/:taskId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/task/detail/:taskId"
+              exact
+              Component={TaskDetail}
             />
           </Route>
         </Routes>

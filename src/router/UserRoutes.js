@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/User/Dashboard";
 import UserTask from "../pages/User/task/UserTask";
 import UserTaskResponse from "../pages/User/task/UserTaskResponse";
+import UserTaskDetail from "../pages/User/task/UserTaskDetail";
 import UserWorkflowHistory from "../pages/User/workflow/UserWorkflowHistory";
 import UserProtectedRoutes from "./RouteProtection/UserProtectedRoutes";
 
@@ -26,6 +27,17 @@ function UserRoutes() {
               path="/user/task/response/:taskAssignmentId"
               exact
               Component={UserTaskResponse}
+            />
+          </Route>
+          <Route
+            path="/user/task/detail/:taskAssignmentId"
+            exact
+            Component={UserProtectedRoutes}
+          >
+            <Route
+              path="/user/task/detail/:taskAssignmentId"
+              exact
+              Component={UserTaskDetail}
             />
           </Route>
           <Route path="/user/history" exact Component={UserProtectedRoutes}>

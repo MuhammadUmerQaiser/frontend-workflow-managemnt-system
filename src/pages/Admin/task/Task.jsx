@@ -4,6 +4,7 @@ import UserLayout from "../../../components/User/UserLayout";
 import Table from "../../../components/common/table/Table";
 import { useSnackbar } from "notistack";
 import { AdminService } from "../../../services/admin/admin.service";
+import Pagination from "../../../components/common/pagination/Pagination";
 
 const Task = () => {
   const fields = ["_id", "name", "action"];
@@ -24,10 +25,10 @@ const Task = () => {
 
   const getListOfAllTasks = async () => {
     try {
-        const endpoint = `${
-            process.env.REACT_APP_BACKEND_URL
-          }/get-all-tasks?page=${currentPage}&paginatedData=${true}`;
-          const response = await adminService.getData(endpoint);
+      const endpoint = `${
+        process.env.REACT_APP_BACKEND_URL
+      }/get-all-tasks?page=${currentPage}&paginatedData=${true}`;
+      const response = await adminService.getData(endpoint);
       if (response.status === 200) {
         setTask(response?.data?.data);
         setCurrentPage(response?.data?.currentPage);
@@ -77,22 +78,64 @@ const Task = () => {
                           </Link>
                         </div>
                         <div className="table-reponsive">
-                          <Table
-                            fields={fields}
-                            data={tasks}
-                            currentPage={currentPage}
-                            itemsPerPage={pageSize}
-                            totalPages={totalPages}
-                            handlePageChange={handlePageChange}
-                            detailLink={"/admin/task/detail"}
-                            deleteModalButton={false}
-                            editLink={"/admin/employee/edit"}
-                            showViewButton={true}
-                            editModalButton={false}
-                            editButtonLink={false}
-                            responseButton={true}
-                            responseLink={'/admin/task/response'}
-                          />
+                          <div className="table-responsive">
+                            <table className="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Id</th>
+                                  <th>Name</th>
+                                  <th>Assignee</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {tasks?.map((task, index) => (
+                                  <tr key={index}>
+                                    <td>{task._id}</td>
+                                    <td>{task.name}</td>
+                                    <td>
+                                      <ul>
+                                        {task.task_assignments?.map(
+                                          (assignment, assignmentIndex) => (
+                                            <li key={assignmentIndex}>
+                                              <Link
+                                                to={`/admin/task/response/${task._id}?user=${assignment?.assigned_to?._id}`}
+                                              >
+                                                {`${assignment?.assigned_to?.name}, Email: ${assignment?.assigned_to?.email}`}
+                                              </Link>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    </td>
+                                    <td>
+                                      <Link
+                                        to={`/admin/task/detail/${task._id}`}
+                                        className="btn btn-sm btn-success"
+                                        style={{ marginLeft: "10px" }}
+                                      >
+                                        <i className="bi bi-eye-fill"></i>
+                                      </Link>
+                                      <Link
+                                        to={`/admin/task/response/${task._id}`}
+                                        className="btn btn-sm btn-info"
+                                        style={{ marginLeft: "10px" }}
+                                      >
+                                        <i className="bi bi-reply"></i>
+                                      </Link>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            <div className="d-flex align-items-center justify-content-center">
+                              <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

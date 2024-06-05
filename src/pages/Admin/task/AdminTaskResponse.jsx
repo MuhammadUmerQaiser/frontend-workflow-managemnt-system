@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import UserLayout from "../../../components/User/UserLayout";
 import TaskResponsesLayout from "../../../components/User/task/TaskResponsesLayout";
 import { AdminService } from "../../../services/admin/admin.service";
@@ -8,6 +8,7 @@ import AddModal from "../../../components/common/modal/AddModal";
 
 const AdminTaskResponse = () => {
   const { taskId } = useParams();
+  const location = useLocation();
   const [taskAssignments, setTaskAssignments] = useState([]);
   const [allowResponseMessage, setAllowResponseMessage] = useState(true);
   const [selectedTab, setSelectedTab] = useState(null);
@@ -19,18 +20,46 @@ const AdminTaskResponse = () => {
 
   const getListOfTaskAssignmentOnBasisOfTask = async () => {
     try {
+      const searchParams = new URLSearchParams(location.search);
+      const userId = searchParams.get("user");
       const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-task-assignment-by-task/${taskId}`;
       const response = await userService.getData(endpoint);
       if (response.status === 200) {
         const assignments = response?.data?.data;
         setTaskAssignments(assignments);
-        if (assignments.length === 1) {
-          setSelectedTab(0);
-          setReciever(response?.data?.data[0].assigned_to);
-          if (response?.data?.data[0].close_assignment_request == "accepted") {
-            setAllowResponseMessage(false);
-          } else {
-            setAllowResponseMessage(true);
+        if (userId) {
+          const getUserAssignment = response?.data?.data.find((assignment) => {
+            return assignment.assigned_to._id === userId;
+          });
+          const getUserAssignmentIndex = response?.data?.data.findIndex(
+            (assignment) => {
+              return assignment.assigned_to._id === userId;
+            }
+          );
+          if (getUserAssignmentIndex !== -1 && getUserAssignment) {
+            setSelectedTab(getUserAssignmentIndex);
+            setReciever(getUserAssignment);
+            if (
+              response?.data?.data[getUserAssignmentIndex]
+                .close_assignment_request == "accepted"
+            ) {
+              setAllowResponseMessage(false);
+            } else {
+              setAllowResponseMessage(true);
+            }
+          }
+          console.log(getUserAssignmentIndex);
+        } else {
+          if (assignments.length === 1) {
+            setSelectedTab(0);
+            setReciever(response?.data?.data[0].assigned_to);
+            if (
+              response?.data?.data[0].close_assignment_request == "accepted"
+            ) {
+              setAllowResponseMessage(false);
+            } else {
+              setAllowResponseMessage(true);
+            }
           }
         }
       }

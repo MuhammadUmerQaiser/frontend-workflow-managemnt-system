@@ -3,6 +3,7 @@ import "../../../styles/task/task.css";
 import { useSnackbar } from "notistack";
 import { AdminService } from "../../../services/admin/admin.service";
 import { isAuthenticated } from "../../../helpers/helpers";
+import io from "socket.io-client";
 
 const TaskResponseLayout = ({
   taskAssignment,
@@ -16,6 +17,7 @@ const TaskResponseLayout = ({
   const user = isAuthenticated();
   const userService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
+  const socket = useMemo(() => io("http://localhost:5000"), []);
 
   const getTheResponseHistory = async () => {
     try {
@@ -65,6 +67,8 @@ const TaskResponseLayout = ({
           autoHideDuration: 2000,
         });
         getTheResponseHistory();
+
+        socket.emit("send-message", response.data.data);
       }
       if (
         response?.response?.status === 500 ||
@@ -116,6 +120,16 @@ const TaskResponseLayout = ({
   useEffect(() => {
     getTheResponseHistory();
   }, [taskAssignment]);
+
+  useEffect(() => {
+    socket.on("receive-message", (message) => {
+      getTheResponseHistory();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
 
   return (
     <>

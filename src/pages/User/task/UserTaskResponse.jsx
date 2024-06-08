@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import "../../../styles/task/task.css";
 import { isAuthenticated } from "../../../helpers/helpers";
+import io from "socket.io-client";
 
 const UserTaskResponse = () => {
   const { taskAssignmentId } = useParams();
@@ -17,6 +18,7 @@ const UserTaskResponse = () => {
   const [checkForTaskClosure, setCheckForTaskClosure] = useState(true);
   const [employeeWithLowerLevels, setEmployeeWithLowerLevels] = useState([]);
   const userService = useMemo(() => new AdminService(), []);
+  const socket = useMemo(() => io("http://localhost:5000"), []);
   const [reciever, setReciever] = useState(null);
   const user = isAuthenticated();
   const { enqueueSnackbar } = useSnackbar();
@@ -66,10 +68,7 @@ const UserTaskResponse = () => {
   };
 
   const handleTaskCloseCheckForCurrentTaskAssignment = (data) => {
-    if (
-      data &&
-      data?.close_assignment_request == 'accepted'
-    ) {
+    if (data && data?.close_assignment_request == "accepted") {
       setAllowResponseMessage(false);
     }
   };
@@ -109,6 +108,7 @@ const UserTaskResponse = () => {
           autoHideDuration: 2000,
         });
         getTaskAssignmentDetailById();
+        socket.emit("send-message", response);
       }
       if (
         response?.response?.status === 500 ||
@@ -140,6 +140,7 @@ const UserTaskResponse = () => {
           autoHideDuration: 2000,
         });
         getTaskAssignmentDetailById();
+        socket.emit("send-message", response);
       }
       if (
         response?.response?.status === 500 ||
@@ -162,6 +163,17 @@ const UserTaskResponse = () => {
     getTaskAssignmentDetailById();
     getEmployeesDetailsWithLowerLevels();
   }, [taskAssignmentId]);
+
+  useEffect(() => {
+    socket.on("receive-message", (message) => {
+      getTaskAssignmentDetailById();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
+
   return (
     <>
       <UserLayout>

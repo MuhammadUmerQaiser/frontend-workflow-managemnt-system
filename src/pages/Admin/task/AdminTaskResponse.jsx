@@ -5,6 +5,7 @@ import TaskResponsesLayout from "../../../components/User/task/TaskResponsesLayo
 import { AdminService } from "../../../services/admin/admin.service";
 import { useSnackbar } from "notistack";
 import AddModal from "../../../components/common/modal/AddModal";
+import io from "socket.io-client";
 
 const AdminTaskResponse = () => {
   const { taskId } = useParams();
@@ -16,6 +17,7 @@ const AdminTaskResponse = () => {
   const [reciever, setReciever] = useState(null);
   const [loading, setLoading] = useState(false);
   const userService = useMemo(() => new AdminService(), []);
+  const socket = useMemo(() => io("http://localhost:5000"), []);
   const { enqueueSnackbar } = useSnackbar();
 
   const getListOfTaskAssignmentOnBasisOfTask = async () => {
@@ -118,6 +120,7 @@ const AdminTaskResponse = () => {
           autoHideDuration: 2000,
         });
         getListOfTaskAssignmentOnBasisOfTask();
+        socket.emit("send-message", response);
         setReason(null);
         const addModalCloseButton = document.getElementById(
           "addModalCloseButton"
@@ -146,6 +149,16 @@ const AdminTaskResponse = () => {
   useEffect(() => {
     getListOfTaskAssignmentOnBasisOfTask();
   }, [taskId]);
+
+  useEffect(() => {
+    socket.on("receive-message", (message) => {
+      getListOfTaskAssignmentOnBasisOfTask();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
 
   return (
     <UserLayout>

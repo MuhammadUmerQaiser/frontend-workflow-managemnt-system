@@ -52,6 +52,7 @@ const Login = () => {
         } else {
           navigate("/user");
         }
+        navigate(0);
       } else {
         enqueueSnackbar("Invalid credentials", {
           variant: "error",

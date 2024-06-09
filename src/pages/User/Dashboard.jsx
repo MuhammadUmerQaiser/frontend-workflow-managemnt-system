@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import UserLayout from "../../components/User/UserLayout";
 import {
   registerServiceWorker,
@@ -6,14 +6,38 @@ import {
   fetchToken,
   onMessageListener,
 } from "../../firebaseService";
+import { AdminService } from "../../services/admin/admin.service";
+import { useSnackbar } from "notistack";
 
 const Dashboard = () => {
+  const [associatedTaxPayers, setAssociatedTaxPayers] = useState([]);
+  const [user, setUser] = useState([]);
+  const userService = useMemo(() => new AdminService(), []);
+  const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     registerServiceWorker();
     requestPermission();
     fetchToken();
     onMessageListener();
+    getTheListOfTaxPayerAssociatedWithEmployee();
   }, []);
+
+  const getTheListOfTaxPayerAssociatedWithEmployee = async () => {
+    try {
+      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-user-associated-tax-payer`;
+      const response = await userService.getData(endpoint);
+      if (response.status === 200) {
+        setAssociatedTaxPayers(response?.data?.data);
+        setUser(response?.data?.user);
+      }
+    } catch (error) {
+      enqueueSnackbar("An error occurred", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  };
 
   return (
     <>
@@ -35,74 +59,46 @@ const Dashboard = () => {
             <div className="row">
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-xxl-4 col-md-4">
-                    <div className="card info-card sales-card">
-                      <div className="card-body">
-                        <h5 className="card-title">
-                          Sales <span>| Today</span>
+                  <div className="col-xxl-12 col-md-12">
+                    <div className="card">
+                      {user?.associated ? (
+                        <h5 className="card-header">
+                          You are associated with {user?.associated?.name}
                         </h5>
-
-                        <div className="d-flex align-items-center">
-                          <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i className="bi bi-cart"></i>
-                          </div>
-                          <div className="ps-3">
-                            <h6>145</h6>
-                            <span className="text-success small pt-1 fw-bold">
-                              12%
-                            </span>
-                            <span className="text-muted small pt-2 ps-1">
-                              increase
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-xxl-4 col-md-4">
-                    <div className="card info-card revenue-card">
-                      <div className="card-body">
-                        <h5 className="card-title">
-                          Revenue <span>| This Month</span>
+                      ) : (
+                        <h5 className="card-header">
+                          You are not associated with any desk
                         </h5>
-                        <div className="d-flex align-items-center">
-                          <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i className="bi bi-currency-dollar"></i>
-                          </div>
-                          <div className="ps-3">
-                            <h6>$3,264</h6>
-                            <span className="text-success small pt-1 fw-bold">
-                              8%
-                            </span>
-                            <span className="text-muted small pt-2 ps-1">
-                              increase
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-xxl-4 col-xl-4">
-                    <div className="card info-card customers-card">
+                      )}
                       <div className="card-body">
-                        <h5 className="card-title">
-                          Customers <span>| This Year</span>
-                        </h5>
-
-                        <div className="d-flex align-items-center">
-                          <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i className="bi bi-people"></i>
-                          </div>
-                          <div className="ps-3">
-                            <h6>1244</h6>
-                            <span className="text-danger small pt-1 fw-bold">
-                              12%
-                            </span>
-                            <span className="text-muted small pt-2 ps-1">
-                              decrease
-                            </span>
-                          </div>
-                        </div>
+                        {associatedTaxPayers.length > 0 && (
+                          <>
+                            <h5 className="card-title">Tax Payer List</h5>
+                            <ul className="list-group">
+                              {associatedTaxPayers?.map((taxPayer, index) => (
+                                <li className="list-group-item" key={index}>
+                                  <div className="tax-payer-info">
+                                    <div>
+                                      <strong>Name:</strong> {taxPayer.name}
+                                    </div>
+                                    <div>
+                                      <strong>Category:</strong>{" "}
+                                      {taxPayer?.category?.name}
+                                    </div>
+                                    <div>
+                                      <strong>Sub Category:</strong>{" "}
+                                      {taxPayer?.sub_category?.name}
+                                    </div>
+                                    <div>
+                                      <strong>National Tax Number:</strong>{" "}
+                                      {taxPayer?.ntn}
+                                    </div>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

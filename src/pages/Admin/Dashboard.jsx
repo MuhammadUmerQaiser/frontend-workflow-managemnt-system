@@ -1,6 +1,20 @@
+import { useEffect } from "react";
 import UserLayout from "../../components/User/UserLayout";
+import {
+  registerServiceWorker,
+  requestPermission,
+  fetchToken,
+  onMessageListener,
+} from "../../firebaseService";
 
 const Dashboard = () => {
+  useEffect(() => {
+    registerServiceWorker();
+    requestPermission();
+    fetchToken();
+    onMessageListener();
+  }, []);
+  
   return (
     <>
       <UserLayout>

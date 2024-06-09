@@ -17,14 +17,16 @@ const Table = ({
   deleteModalButton = true,
   editModalButtonId = "",
   handleRowDataOnEditClick = null,
-  editButtonLink = true
+  editButtonLink = true,
+  responseButton = false,
+  responseLink = null,
 }) => {
   return (
     <div className="table-responsive">
       <table className="table table-striped">
         <thead>
           <tr>
-            {fields.map((item, index) => (
+            {fields?.map((item, index) => (
               <th key={index} style={{ textTransform: "capitalize" }}>
                 {item == "_id" ? "Id" : item.replace(/[-_]/g, " ")}
               </th>
@@ -32,7 +34,7 @@ const Table = ({
           </tr>
         </thead>
         <tbody>
-          {data.map((rowData, rowIndex) => (
+          {data?.map((rowData, rowIndex) => (
             <tr key={rowIndex}>
               {fields.map((field, fieldIndex) => {
                 if (field !== "action" && field != "active") {
@@ -106,6 +108,16 @@ const Table = ({
                     style={{ marginLeft: "10px" }}
                   >
                     <i className="bi bi-eye-fill"></i>
+                  </Link>
+                )}
+
+                {responseButton && (
+                  <Link
+                    to={`${responseLink}/${rowData["_id"]}`}
+                    className="btn btn-sm btn-info"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    <i className="bi bi-reply"></i>
                   </Link>
                 )}
               </td>

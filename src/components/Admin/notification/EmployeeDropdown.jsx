@@ -161,6 +161,7 @@ const EmployeeForm = ({handleInformationDataFromEmployeeDropdown}) => {
       ))}
       <button
         className="btn btn-secondary btn-sm"
+        type="button"
         onClick={handleAddMoreButton}
       >
         Add More

@@ -1,36 +1,35 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import { useSnackbar } from "notistack";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import UserLayout from "../../../components/User/UserLayout";
-import AddModal from "../../../components/common/modal/AddModal";
 import Table from "../../../components/common/table/Table";
+import { useSnackbar } from "notistack";
 import { AdminService } from "../../../services/admin/admin.service";
 
-const Notification = () => {
-  const fields = ["_id", "number", "date", "description", "action"];
-  const [notifications, setNotifications] = useState([]);
+const Task = () => {
+  const fields = ["_id", "task-name", "action"];
+  const [tasks, setTask] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const adminService = useMemo(() => new AdminService(), []);
+  const userService = useMemo(() => new AdminService(), []);
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    getListOfAllMyTasks();
+  }, [currentPage || tasks]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const getAllNotifications = async () => {
+  const getListOfAllMyTasks = async () => {
     try {
-      const endpoint = `${
-        process.env.REACT_APP_BACKEND_URL
-      }/get-notifications?page=${currentPage}&paginatedData=${true}`;
-      const response = await adminService.getData(endpoint);
+        const endpoint = `${
+            process.env.REACT_APP_BACKEND_URL
+          }/get-my-tasks-assignments?page=${currentPage}&paginatedData=${true}`;
+          const response = await userService.getData(endpoint);
       if (response.status === 200) {
-        setNotifications(response?.data?.data);
+        setTask(response?.data?.data);
         setCurrentPage(response?.data?.currentPage);
         setPageSize(response?.data?.pageSize);
         setTotalPages(response?.data?.totalPages);
@@ -43,38 +42,19 @@ const Notification = () => {
     }
   };
 
-  const getAllEmployees = async () => {
-    try {
-      const endpoint = `${process.env.REACT_APP_BACKEND_URL}/get-all-unassoicated-employees`;
-      const response = await adminService.getData(endpoint);
-      if (response.status === 200) {
-        // setEmployees(response?.data?.data);
-      }
-    } catch (error) {
-      enqueueSnackbar("An error occurred", {
-        variant: "error",
-        autoHideDuration: 2000,
-      });
-    }
-  };
-
-  useEffect(() => {
-    getAllNotifications();
-  }, [currentPage || notifications]);
-
   return (
     <>
       <UserLayout>
         <main id="main" className="main">
           <div className="pagetitle">
-            <h1>Notification</h1>
+            <h1>Tasks</h1>
             <nav>
               <ol className="breadcrumb">
                 <li className="breadcrumb-item">
                   <Link to="/">Home</Link>
                 </li>
                 <li className="breadcrumb-item">
-                  <Link to="/admin/notification">Notification</Link>
+                  <Link to="/user/tasks">Tasks</Link>
                 </li>
                 <li className="breadcrumb-item active">Lists</li>
               </ol>
@@ -84,32 +64,28 @@ const Notification = () => {
             <div className="row">
               <div className="col-lg-12">
                 <div className="tab-content">
-                  <div className="tab-pane fade show active" id="employees">
+                  <div className="tab-pane fade show active" id="Tasks">
                     <div className="card">
                       <div className="card-body">
                         <div className="d-flex align-items-start justify-content-between mb-3">
-                          <h5 className="card-title">Notifications</h5>
-                          <Link
-                            to="/admin/notification/create"
-                            className="btn btn-primary btn-sm mt-3"
-                          >
-                            Add New Notification
-                          </Link>
+                          <h5 className="card-title">Tasks</h5>
                         </div>
                         <div className="table-reponsive">
                           <Table
                             fields={fields}
-                            data={notifications}
+                            data={tasks}
                             currentPage={currentPage}
                             itemsPerPage={pageSize}
                             totalPages={totalPages}
                             handlePageChange={handlePageChange}
+                            detailLink={"/user/task/detail"}
                             deleteModalButton={false}
-                            editLink={"/admin/employee/edit"}
-                            detailLink={"/admin/notification/detail"}
+                            editLink={"/user/employee/edit"}
                             showViewButton={true}
                             editModalButton={false}
                             editButtonLink={false}
+                            responseButton={true}
+                            responseLink={'/user/task/response'}
                           />
                         </div>
                       </div>
@@ -125,4 +101,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default Task;

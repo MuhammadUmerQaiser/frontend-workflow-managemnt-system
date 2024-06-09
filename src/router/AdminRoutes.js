@@ -6,7 +6,7 @@ import Domain from "../pages/Admin/general/domains/Domain";
 import Designation from "../pages/Admin/general/designations/Designation";
 import Team from "../pages/Admin/general/teams/Team";
 import Grade from "../pages/Admin/general/grades/Grade";
-import Task from "../pages/Admin/general/tasks/Task";
+// import Task from "../pages/Admin/general/tasks/Task";
 import Role from "../pages/Admin/general/roles/Role";
 import AddEmployeeForm from "../pages/Admin/employees/AddEmployeeForm";
 import EmployeeDetail from "../pages/Admin/employees/EmployeeDetail";
@@ -17,10 +17,20 @@ import Category from "../pages/Admin/category/Category";
 import SubCategory from "../pages/Admin/sub-category/SubCategory";
 import TaxPayer from "../pages/Admin/tax-payer/TaxPayer";
 import Desk from "../pages/Admin/desk/Desk";
+import DeskDetail from "../pages/Admin/desk/DeskDetail";
 // import Notification from "../pages/Admin/notification/Notification";
 import WorkingGroup from "../pages/Admin/working-group/WorkingGroup";
+import WorkingGroupDetail from "../pages/Admin/working-group/WorkingGroupDetail";
 import Notification from "../pages/Admin/notification/Notification";
+import NotificationDetail from "../pages/Admin/notification/NotificationDetail";
 import AddNotificationForm from "../pages/Admin/notification/AddNotificationForm";
+import Task from "../pages/Admin/task/Task";
+import AddTaskForm from "../pages/Admin/task/AddTaskForm";
+import AdminTaskResponse from "../pages/Admin/task/AdminTaskResponse";
+import TaskDetail from "../pages/Admin/task/TaskDetail";
+import Profile from "../pages/User/Profile";
+import DeskHistory from "../pages/Admin/history/DeskHistory";
+import TaskHistory from "../pages/Admin/history/TaskHistory";
 
 function AdminRoutes() {
   return (
@@ -82,9 +92,6 @@ function AdminRoutes() {
           <Route path="/admin/grades" exact Component={AdminProtectedRoute}>
             <Route path="/admin/grades" exact Component={Grade} />
           </Route>
-          <Route path="/admin/tasks" exact Component={AdminProtectedRoute}>
-            <Route path="/admin/tasks" exact Component={Task} />
-          </Route>
           <Route path="/admin/roles" exact Component={AdminProtectedRoute}>
             <Route path="/admin/roles" exact Component={Role} />
           </Route>
@@ -112,11 +119,33 @@ function AdminRoutes() {
             <Route path="/admin/desk" exact Component={Desk} />
           </Route>
           <Route
+            path="/admin/desk/detail/:deskId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/desk/detail/:deskId"
+              exact
+              Component={DeskDetail}
+            />
+          </Route>
+          <Route
             path="/admin/notification"
             exact
             Component={AdminProtectedRoute}
           >
             <Route path="/admin/notification" exact Component={Notification} />
+          </Route>
+          <Route
+            path="/admin/notification/detail/:notificationId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/notification/detail/:notificationId"
+              exact
+              Component={NotificationDetail}
+            />
           </Route>
           <Route
             path="/admin/notification/create"
@@ -131,6 +160,82 @@ function AdminRoutes() {
           </Route>
           <Route path="/admin/groups" exact Component={AdminProtectedRoute}>
             <Route path="/admin/groups" exact Component={WorkingGroup} />
+          </Route>
+          <Route
+            path="/admin/group/detail/:workingGroupId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/group/detail/:workingGroupId"
+              exact
+              Component={WorkingGroupDetail}
+            />
+          </Route>
+          <Route path="/admin/tasks" exact Component={AdminProtectedRoute}>
+            <Route path="/admin/tasks" exact Component={Task} />
+          </Route>
+          <Route
+            path="/admin/task/create"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route path="/admin/task/create" exact Component={AddTaskForm} />
+          </Route>
+          <Route
+            path="/admin/task/response/:taskId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/task/response/:taskId"
+              exact
+              Component={AdminTaskResponse}
+            />
+          </Route>
+          <Route
+            path="/admin/task/detail/:taskId"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/task/detail/:taskId"
+              exact
+              Component={TaskDetail}
+            />
+          </Route>
+          <Route
+            path="/admin/profile"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/profile"
+              exact
+              Component={Profile}
+            />
+          </Route>
+          <Route
+            path="/admin/desk-history"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/desk-history"
+              exact
+              Component={DeskHistory}
+            />
+          </Route>
+          <Route
+            path="/admin/task-history"
+            exact
+            Component={AdminProtectedRoute}
+          >
+            <Route
+              path="/admin/task-history"
+              exact
+              Component={TaskHistory}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -107,21 +107,33 @@ const DashboardSidebar = () => {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/admin/notification" className="nav-link">
-                  <i className="bi bi-people"></i>
-                  <span>Notification</span>
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/admin/desk" className="nav-link">
                   <i className="bi bi-people"></i>
                   <span>Desks</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/admin/history" className="nav-link">
+                <Link to="/admin/notification" className="nav-link">
                   <i className="bi bi-people"></i>
-                  <span>History</span>
+                  <span>Notification</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/tasks" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Tasks</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/desk-history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Employee Desk History</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/admin/task-history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Employee Task History</span>
                 </Link>
               </li>
             </>
@@ -129,15 +141,21 @@ const DashboardSidebar = () => {
           {user.role != "Admin" && (
             <>
               <li className="nav-item">
-                <Link to="/user/workflow" className="nav-link">
+                <Link to="/user/tasks" className="nav-link">
                   <i className="bi bi-people"></i>
-                  <span>Workflow</span>
+                  <span>Tasks</span>
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/user/history" className="nav-link">
+                <Link to="/user/desk-history" className="nav-link">
                   <i className="bi bi-people"></i>
-                  <span>History</span>
+                  <span>Desk History</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/user/task-history" className="nav-link">
+                  <i className="bi bi-people"></i>
+                  <span>Task History</span>
                 </Link>
               </li>
             </>

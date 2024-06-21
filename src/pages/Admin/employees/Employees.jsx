@@ -31,6 +31,7 @@ const Employees = () => {
         setPageSize(response?.data?.pageSize);
         setTotalPages(response?.data?.totalPages);
       }
+      console.log("employees",response)
     } catch (error) {
       enqueueSnackbar("An error occurred", {
         variant: "error",

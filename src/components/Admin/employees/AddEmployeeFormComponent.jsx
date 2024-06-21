@@ -20,13 +20,13 @@ const AddEmployeeForm = () => {
     name: "",
     email: "",
     password: "",
-    domain: "",
-    designation: "",
-    role: "",
-    member: "",
-    team: "",
-    grade: "",
-    tasks: [],
+    // domain: "",
+    // designation: "",
+    // role: "",
+    // member: "",
+    // team: "",
+    // grade: "",
+    // tasks: [],
   });
   const [roles, setRoles] = useState([]);
   const [domains, setDomains] = useState([]);
@@ -70,25 +70,25 @@ const AddEmployeeForm = () => {
       name,
       email,
       password,
-      domain,
-      designation,
-      member,
-      role,
-      team,
-      grade,
-      tasks,
+      // domain="no domain",
+      // designation="big designation",
+      // member,
+      // role,
+      // team,
+      // grade="909",
+      // tasks=["00"],
     } = employeeData;
 
     if (
       !email ||
       !password ||
-      !name ||
-      !domain ||
-      !designation ||
-      !member ||
-      !grade ||
-      !tasks ||
-      !role
+      !name 
+      // !domain ||
+      // !designation ||
+      // !member ||
+      // !grade ||
+      // !tasks ||
+      // !role
     ) {
       enqueueSnackbar("Please fill in all the fields", {
         variant: "error",
@@ -113,6 +113,7 @@ const AddEmployeeForm = () => {
         variant: "error",
         autoHideDuration: 2000,
       });
+      console.log(error)
     } finally {
       setLoading(false);
     }
@@ -210,7 +211,7 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Role</option>
-                {roles.map((role, index) => {
+                {roles?.map((role, index) => {
                   return (
                     <option key={index} value={role.name}>
                       {role.name}
@@ -230,7 +231,7 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Domain</option>
-                {domains.map((domain, index) => {
+                {domains?.map((domain, index) => {
                   return (
                     <option key={index} value={domain.name}>
                       {domain.name}
@@ -250,7 +251,7 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Designation</option>
-                {designations.map((designation, index) => {
+                {designations?.map((designation, index) => {
                   return (
                     <option key={index} value={designation.name}>
                       {designation.name}
@@ -298,7 +299,7 @@ const AddEmployeeForm = () => {
                   onChange={handleChange}
                 >
                   <option value="">Select Team</option>
-                  {teams.map((team, index) => {
+                  {teams?.map((team, index) => {
                     return (
                       <option key={index} value={team.name}>
                         {team.name}
@@ -319,7 +320,7 @@ const AddEmployeeForm = () => {
                 onChange={handleChange}
               >
                 <option value="">Select Grade</option>
-                {grades.map((grade, index) => {
+                {grades?.map((grade, index) => {
                   return (
                     <option key={index} value={grade.name}>
                       {grade.name}
@@ -332,7 +333,7 @@ const AddEmployeeForm = () => {
               <label htmlFor="designation" className="form-label">
                 Tasks
               </label>
-              {tasks.map((task, index) => {
+              {tasks?.map((task, index) => {
                 return (
                   <div className="form-check" key={index}>
                     <input

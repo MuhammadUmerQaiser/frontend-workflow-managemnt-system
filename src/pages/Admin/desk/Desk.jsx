@@ -186,7 +186,7 @@ const Desk = () => {
       <UserLayout>
         <main id="main" className="main">
           <div className="pagetitle">
-            <h1>Working Groups</h1>
+            <h1>Desk</h1>
             <nav>
               <ol className="breadcrumb">
                 <li className="breadcrumb-item">

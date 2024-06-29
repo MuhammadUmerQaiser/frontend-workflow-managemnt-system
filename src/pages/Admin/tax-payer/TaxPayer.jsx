@@ -20,6 +20,7 @@ const TaxPayer = () => {
   ];
   const createFileInputRef = useRef(null);
   const [taxPayers, setTaxPayers] = useState([]);
+  const [isBulkImport, setIsBulkImport] = useState(false);
   const [taxPayerData, setTaxPayerData] = useState({
     name: "",
     ntn: "",
@@ -34,7 +35,7 @@ const TaxPayer = () => {
     name: "",
     category: "",
     sub_category: "",
-    ntn: ""
+    ntn: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -74,6 +75,10 @@ const TaxPayer = () => {
         [name]: value,
       }));
     }
+  };
+
+  const handleBulkOptionChange = (e) => {
+    setIsBulkImport(e.target.value === "bulk");
   };
 
   const handleEditChange = (e) => {
@@ -152,6 +157,81 @@ const TaxPayer = () => {
     return (
       <form className="row g-3" method="POST">
         <div className="col-12">
+          <label className="form-label">Import Type</label>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="importType"
+              value="single"
+              checked={!isBulkImport}
+              onChange={handleBulkOptionChange}
+              id="singleData"
+            />
+            <label className="form-check-label" htmlFor="singleData">
+              Single Data
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="importType"
+              value="bulk"
+              checked={isBulkImport}
+              onChange={handleBulkOptionChange}
+              id="bulkImport"
+            />
+            <label className="form-check-label" htmlFor="bulkImport">
+              Bulk Import
+            </label>
+          </div>
+        </div>
+        {isBulkImport ? (
+          <div className="col-12">
+            <label htmlFor="domain" className="form-label">
+              Excel File
+            </label>
+            <input
+              type="file"
+              name="image_uploaded"
+              className="form-control"
+              onChange={handleChange}
+              ref={createFileInputRef}
+              required
+            />
+          </div>
+        ) : (
+          <>
+            <div className="col-12">
+              <label htmlFor="name" className="form-label">
+                Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                value={taxPayerData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="col-12">
+              <label htmlFor="ntn" className="form-label">
+                National Tax Number (NTN)
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                name="ntn"
+                value={taxPayerData.ntn}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </>
+        )}
+        {/* <div className="col-12">
           <label htmlFor="name" className="form-label">
             Name
           </label>
@@ -176,7 +256,7 @@ const TaxPayer = () => {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
         <div className="col-12">
           <label htmlFor="domain" className="form-label">
             Categories
@@ -217,7 +297,7 @@ const TaxPayer = () => {
             })}
           </select>
         </div>
-        <div className="col-12">
+        {/* <div className="col-12">
           <label htmlFor="domain" className="form-label">
             Excel File
           </label>
@@ -229,7 +309,7 @@ const TaxPayer = () => {
             ref={createFileInputRef}
             required
           />
-        </div>
+        </div> */}
       </form>
     );
   };
